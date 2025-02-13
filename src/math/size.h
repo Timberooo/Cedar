@@ -2,7 +2,7 @@
 // Size data structures.
 //
 // Size structs must adhere to the following format and rules:
-// * Dimensions must be named "SizeXD" where "X" is the number of dimensions the struct
+// * Structs must be named "SizeXD" where "X" is the number of dimensions the struct
 //   represents.
 // * Must be a template that takes a generic type T, where T is the type of the member
 //   variables. All member variables must be the same type.
