@@ -17,7 +17,7 @@
 #ifndef CEDAR_MATH_POINT_H
 #define CEDAR_MATH_POINT_H
 
-namespace Pine
+namespace Cedar
 {
     template <typename T>
     struct Point2D;
