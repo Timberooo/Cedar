@@ -1,6 +1,6 @@
 CC     = g++
 TARGET = cedar
-FILES  = src/main.cpp
+FILES  = src/main.cpp src/terminal.cpp
 
 STD_VERSION = -std=c++17
 WARNINGS    = -Wall
