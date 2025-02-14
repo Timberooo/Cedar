@@ -1,0 +1,6 @@
+# Compiler output
+cedar
+cedar-debug
+
+# Temporary Vim and Nano files
+.*[swp]
