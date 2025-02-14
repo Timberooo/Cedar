@@ -66,15 +66,8 @@ namespace
         // NOTE: Can't be sure if the alt screen buffer is already enabled or not, but
         //       can reasonably assume its not.
         altScreenBufferEnabled = false;
-
-        // Make sure terminal starts in cooked mode
-        // termios attributes;
-        // attributes.c_iflag |= cookedModeInputFlags;
-        // attributes.c_lflag |= cookedModeOutputFlags;
-        // (void)tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes);
-
-        // mode = Cedar::Terminal::Mode::cooked;
-
+        
+        // Initializing the mode to raw so setMode will apply the cooked mode flags.
         mode = Cedar::Terminal::Mode::raw;
         Cedar::Terminal::setMode(Cedar::Terminal::Mode::cooked);
     }
