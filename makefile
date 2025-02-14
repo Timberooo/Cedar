@@ -4,7 +4,7 @@ FILES  = src/main.cpp src/terminal.cpp
 
 STD_VERSION = -std=c++17
 WARNINGS    = -Wall
-DEBUG_MACRO = -D PINE_DEBUG
+DEBUG_MACRO = -D CEDAR_DEBUG
 
 FLAGS       = $(WARNINGS) $(STD_VERSION)
 DEBUG_FLAGS = $(WARNINGS) $(STD_VERSION) $(DEBUG_MACRO)
