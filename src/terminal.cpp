@@ -28,6 +28,10 @@ namespace
 
 namespace
 {
+    // TODO: Check if the Windows console has these control sequences, and if it does
+    //       find a way to disable them. If that's not possible these may have to be
+    //       removed for parity.
+
     constexpr tcflag_t cookedModeInputFlags  = IXON   | // Ctrl-S and Ctrl-Q
                                                ICRNL;   // Ctrl-M
 
@@ -36,6 +40,7 @@ namespace
                                                ISIG   | // Ctrl-C and Ctrl-Z
                                                IEXTEN;  // Ctrl-V
 
+    // NOTE: Currently unused. Not sure Windows has an equivalent.
     constexpr tcflag_t newlineProcessingFlag = OPOST;   // Process "\n" as "\r\n"
 
 

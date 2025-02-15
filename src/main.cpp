@@ -21,6 +21,8 @@ int main(int argc, char* argv[])
     {
         Cedar::Terminal::setMode(Cedar::Terminal::Mode::raw);
         Cedar::Terminal::enableAltScreenBuffer(true);
+        Cedar::Terminal::showCursor(false);
+
         Cedar::Terminal::writeLine("Hello world! \u256B press 'Q' to quit");
 
         // TODO: Remove once reading console input is implemented.
