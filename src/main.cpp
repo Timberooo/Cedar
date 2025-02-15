@@ -24,10 +24,8 @@ int main(int argc, char* argv[])
         Cedar::Terminal::showCursor(false);
 
         Cedar::Terminal::writeLine("Hello world! \u256B press 'Q' to quit");
-
-        // TODO: Remove once reading console input is implemented.
-        char c;
-        while (read(STDIN_FILENO, &c, 1) == 1 && !(c == 'q' || c == 'Q'));
+        
+        while (Cedar::Terminal::getRawInput() != 'q');
 
         exitStatus = EXIT_SUCCESS;
     }

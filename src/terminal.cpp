@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <new>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -255,6 +256,23 @@ namespace Cedar::Terminal
     void write(std::string_view str)
     {
         (void)::write(STDOUT_FILENO, str.data(), str.size());
+    }
+
+
+
+    char getRawInput()
+    {
+        if (getMode() != Mode::raw)
+            throw std::runtime_error("Cannot get raw input while in cooked mode");
+        
+        char c;
+        read(STDIN_FILENO, &c, 1);
+
+
+
+        // while (read(STDIN_FILENO, &c, 1));
+
+        return c;
     }
 
 

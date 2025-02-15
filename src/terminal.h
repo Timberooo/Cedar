@@ -54,6 +54,9 @@ namespace Cedar::Terminal
     inline void writeLine(std::string_view str);
 
 
+    char getRawInput();
+
+
     Size2D<int> size();
 
 
