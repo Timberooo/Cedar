@@ -20,12 +20,12 @@ namespace Cedar
     template <typename T>
     struct Rectangle
     {
-        Point2D<T> position;
+        Point2D<T> topLeft;
         Size2D<T>  size;
 
         
         inline bool operator==(const Rectangle<T>& other) const {
-            return position == other.position && size == other.size;
+            return topLeft == other.topLeft && size == other.size;
         }
 
         inline bool operator!=(const Rectangle<T>& other) const {
@@ -34,7 +34,7 @@ namespace Cedar
 
 
         inline Point2D<T> bottomRight() const {
-            return { position.x + size.width, position.y + size.height };
+            return { topLeft.x + size.width, topLeft.y + size.height };
         }
     };
 }
