@@ -247,6 +247,8 @@ namespace Cedar::Terminal
 // OS-specific implementation of terminal functions
 #if defined(CEDAR_OS_LINUX) // vvv Linux vvv
 
+#include <termios.h>
+#include <unistd.h>
 #include <sys/ioctl.h>
 
 
@@ -266,7 +268,7 @@ namespace Cedar::Terminal
             throw std::runtime_error("Cannot get raw input while in cooked mode");
         
         char c;
-        read(STDIN_FILENO, &c, 1);
+        (void)read(STDIN_FILENO, &c, 1);    
 
 
 
