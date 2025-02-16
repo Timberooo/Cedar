@@ -46,7 +46,7 @@ namespace Cedar::Terminal
     };
 
 
-    class initializer;
+    class Initializer;
 
 
     void write(std::string_view str);
