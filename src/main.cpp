@@ -24,8 +24,15 @@ int main(int argc, char* argv[])
         Cedar::Terminal::showCursor(false);
 
         Cedar::Terminal::writeLine("Hello world! \u256B press 'Q' to quit");
-        
-        while (Cedar::Terminal::getRawInput() != 'q');
+
+        char input;
+
+        do {
+            input = Cedar::Terminal::getRawInput();
+
+            if (input != '\0')
+                Cedar::Terminal::write(std::to_string(input) + " ");
+        } while (!(input == 'q' || input == 'Q'));
 
         exitStatus = EXIT_SUCCESS;
     }

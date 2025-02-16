@@ -266,13 +266,9 @@ namespace Cedar::Terminal
     {
         if (getMode() != Mode::raw)
             throw std::runtime_error("Cannot get raw input while in cooked mode");
-        
-        char c;
-        (void)read(STDIN_FILENO, &c, 1);    
 
-
-
-        // while (read(STDIN_FILENO, &c, 1));
+        char c = '\0';
+        (void)read(STDIN_FILENO, &c, 1);
 
         return c;
     }
@@ -310,11 +306,15 @@ namespace Cedar::Terminal
         {
             attributes.c_iflag |= cookedModeInputFlags;
             attributes.c_lflag |= cookedModeOutputFlags;
+            attributes.c_cc[VMIN]  = g_internalData.originalAttributes.c_cc[VMIN];
+            attributes.c_cc[VTIME] = g_internalData.originalAttributes.c_cc[VTIME];
         }
         else // Mode::raw
         {
             attributes.c_iflag &= ~cookedModeInputFlags;
             attributes.c_lflag &= ~cookedModeOutputFlags;
+            attributes.c_cc[VMIN]  = 0; // read returns when any input is present
+            attributes.c_cc[VTIME] = 1; // read waits for 100 milliseconds
         }
         
         (void)tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes);
