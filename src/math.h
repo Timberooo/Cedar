@@ -7,6 +7,7 @@
 
 #include "math/math_common.h"
 #include "math/point.h"
+#include "math/rectangle.h"
 #include "math/size.h"
 #include "math/vector.h"
 
