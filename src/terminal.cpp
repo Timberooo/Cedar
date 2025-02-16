@@ -19,7 +19,7 @@ namespace
 
 
 
-// OS-specific implementation of InternalData and terminal flags
+// OS-specific implementation of InternalData
 #if defined(CEDAR_OS_LINUX) // vvv Linux vvv
 
 #include <termios.h>
