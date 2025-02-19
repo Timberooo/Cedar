@@ -262,6 +262,13 @@ namespace Cedar::Terminal
 
 
 
+    void write(char character)
+    {
+        (void)::write(STDOUT_FILENO, &character, 1);
+    }
+
+
+
     char getRawInput()
     {
         if (getMode() != Mode::raw)

@@ -51,6 +51,8 @@ namespace Cedar::Terminal
 
     void write(std::string_view str);
 
+    void write(char character);
+
     inline void writeLine(std::string_view str);
 
 
@@ -121,7 +123,7 @@ namespace Cedar::Terminal
 
     inline void writeLine(std::string_view str) {
         write(str);
-        write("\n");
+        write('\n');
     }
 
 
