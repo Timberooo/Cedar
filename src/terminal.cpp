@@ -529,6 +529,7 @@ namespace Cedar::Terminal
             inputMode &= ~cookedModeInputFlags;
 
         (void)SetConsoleMode(g_internalData.stdInputHandle, inputMode);
+        g_internalData.mode = mode;
     }
 
 
@@ -542,7 +543,7 @@ namespace Cedar::Terminal
         if (enable)
             write("\033[?1049h");
         else
-            write("\033[?1049hl");
+            write("\033[?1049l");
 
         g_internalData.altScreenBufferEnabled = enable;
     }
