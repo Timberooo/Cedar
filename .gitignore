@@ -1,6 +1,8 @@
 # Compiler output
 cedar
 cedar-debug
+bin/
+bin-int/
 
 # Temporary Vim and Nano files
 .*[swp]
