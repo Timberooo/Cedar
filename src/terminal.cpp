@@ -103,7 +103,111 @@ namespace
 
 #elif defined(CEDAR_OS_WINDOWS) // vvv Windows vvv // ^^^ Linux ^^^
 
-// TODO: Implement Windows version.
+#include "platform/windows.h"
+
+
+
+namespace
+{
+    constexpr DWORD cookedModeInputFlags = ENABLE_ECHO_INPUT |
+                                           ENABLE_LINE_INPUT |
+                                           ENABLE_PROCESSED_INPUT;
+
+    constexpr DWORD vtProcessingOutputModeFlags = ENABLE_PROCESSED_OUTPUT |
+                                                  ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+
+
+    struct InternalData
+    {
+    public:
+
+        struct OriginalConsoleInfo
+        {
+            DWORD mode;
+            UINT  codePage;
+        };
+
+
+        Cedar::Terminal::Mode mode;
+        bool                  altScreenBufferEnabled;
+
+        const HANDLE stdOutputHandle;
+        const HANDLE stdInputHandle;
+
+        const OriginalConsoleInfo originalOutputInfo;
+        const OriginalConsoleInfo originalInputInfo;
+
+
+        InternalData();
+
+        ~InternalData();
+
+    private:
+
+        static OriginalConsoleInfo initOriginalConsoleInfo(HANDLE handle);
+    };
+
+
+
+    InternalData::InternalData() :
+        stdOutputHandle(GetStdHandle(STD_OUTPUT_HANDLE)),
+        stdInputHandle(GetStdHandle(STD_INPUT_HANDLE)),
+        originalOutputInfo(initOriginalConsoleInfo(GetStdHandle(STD_OUTPUT_HANDLE))),
+        originalInputInfo(initOriginalConsoleInfo(GetStdHandle(STD_INPUT_HANDLE)))
+    {
+        // NOTE: Can't be sure if the alt screen buffer is already enabled or not, but
+        //       can reasonably assume its not.
+        altScreenBufferEnabled = false;
+
+        // Make sure VT processing is enabled
+        DWORD outputMode;
+        (void)GetConsoleMode(stdOutputHandle, &outputMode);
+        outputMode |= vtProcessingOutputModeFlags;
+        (void)SetConsoleMode(stdOutputHandle, outputMode);
+
+        // Initializing the mode to raw so setMode will apply the cooked mode flags.
+        mode = Cedar::Terminal::Mode::raw;
+        Cedar::Terminal::setMode(Cedar::Terminal::Mode::cooked);
+
+        (void)SetConsoleOutputCP(CP_UTF8);
+        (void)SetConsoleCP(CP_UTF8);
+    }
+
+
+
+    InternalData::~InternalData()
+    {
+        Cedar::Terminal::resetColor();
+
+        // NOTE: Can't be sure what these were set to before the program started, but can
+        //       reasonably assume they were set to these values.
+        Cedar::Terminal::showCursor(true);
+        Cedar::Terminal::enableAltScreenBuffer(false);
+
+        (void)SetConsoleMode(stdOutputHandle, originalOutputInfo.mode);
+        (void)SetConsoleMode(stdInputHandle, originalInputInfo.mode);
+
+        (void)SetConsoleOutputCP(originalOutputInfo.codePage);
+        (void)SetConsoleCP(originalInputInfo.codePage);
+    }
+
+
+
+    InternalData::OriginalConsoleInfo InternalData::initOriginalConsoleInfo(HANDLE handle)
+    {
+        OriginalConsoleInfo originalConsoleInfo;
+
+        (void)GetConsoleMode(handle, &originalConsoleInfo.mode);
+        
+        if (handle == GetStdHandle(STD_OUTPUT_HANDLE))
+            originalConsoleInfo.codePage = GetConsoleOutputCP();
+        else // Assumed to be STD_INPUT_HANDLE
+            originalConsoleInfo.codePage = GetConsoleCP();
+
+        return originalConsoleInfo;
+    }
+}
 
 #endif // ^^^ Windows ^^^
 
@@ -353,6 +457,113 @@ namespace Cedar::Terminal
 
 #elif defined(CEDAR_OS_WINDOWS) // vvv Windows vvv // ^^^ Linux ^^^
 
-// TODO: Implement Windows version.
+#include "platform/windows.h"
+
+
+
+namespace Cedar::Terminal
+{
+    void write(std::string_view str)
+    {
+        (void)WriteConsoleA(g_internalData.stdOutputHandle, str.data(), str.length(), NULL, NULL);
+    }
+
+    void write(char character)
+    {
+        (void)WriteConsoleA(g_internalData.stdOutputHandle, &character, 1, NULL, NULL);
+    }
+
+
+
+    char getRawInput()
+    {
+        char input = '\0';
+
+        DWORD eventCount;
+        (void)GetNumberOfConsoleInputEvents(g_internalData.stdInputHandle, &eventCount);
+
+        for (std::size_t i = 0; i < eventCount; i++)
+        {
+            DWORD        eventsRead;
+            INPUT_RECORD inputRecord;
+            (void)ReadConsoleInputA(g_internalData.stdInputHandle, &inputRecord, 1, &eventsRead);
+
+            if (inputRecord.EventType == KEY_EVENT && inputRecord.Event.KeyEvent.bKeyDown)
+                input = inputRecord.Event.KeyEvent.uChar.AsciiChar;
+        }
+
+        return input;
+    }
+
+
+
+    Size2D<int> size()
+    {
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        (void)GetConsoleScreenBufferInfo(g_internalData.stdOutputHandle, &csbi);
+
+        return { csbi.srWindow.Right - csbi.srWindow.Left + 1, csbi.srWindow.Bottom - csbi.srWindow.Top + 1 };
+    }
+
+
+
+    Mode getMode()
+    {
+        // TODO: See if this can be a non-OS-specific function.
+        return g_internalData.mode;
+    }
+
+
+
+    void setMode(Mode mode)
+    {
+        if (g_internalData.mode == mode)
+            return;
+
+        DWORD inputMode;
+        (void)GetConsoleMode(g_internalData.stdInputHandle, &inputMode);
+
+        if (mode == Mode::cooked)
+            inputMode |= cookedModeInputFlags;
+        else // Mode::raw
+            inputMode &= ~cookedModeInputFlags;
+
+        (void)SetConsoleMode(g_internalData.stdInputHandle, inputMode);
+    }
+
+
+
+    void enableAltScreenBuffer(bool enable)
+    {
+        // TODO: See if this can be a non-OS-specific function.
+        if (g_internalData.altScreenBufferEnabled == enable)
+            return;
+
+        if (enable)
+            write("\033[?1049h");
+        else
+            write("\033[?1049hl");
+
+        g_internalData.altScreenBufferEnabled = enable;
+    }
+
+
+
+    void clear()
+    {
+        // NOTE: The ANSI escape sequence \033[2J doesn't seem to work on Windows so all
+        //       of this is needed instead.
+
+        setCursorPosition(0, 0);
+        resetColor();
+
+        Size2D<int> terminalSize = size();
+
+        COORD startCell = { 0, 0 };
+        DWORD charsWritten;
+
+        (void)FillConsoleOutputCharacterA(g_internalData.stdOutputHandle, ' ', terminalSize.width * terminalSize.height, startCell, &charsWritten);
+    }
+}
 
 #endif // ^^^ Windows ^^^

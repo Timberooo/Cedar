@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="src\main\common_main.cpp" />
     <ClCompile Include="src\main\windows_main.cpp" />
+    <ClCompile Include="src\platform\windows\windows_common.cpp" />
     <ClCompile Include="src\terminal.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +154,8 @@
     <ClInclude Include="src\math\rectangle.h" />
     <ClInclude Include="src\math\size.h" />
     <ClInclude Include="src\math\vector.h" />
+    <ClInclude Include="src\platform\windows.h" />
+    <ClInclude Include="src\platform\windows\windows_common.h" />
     <ClInclude Include="src\terminal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
