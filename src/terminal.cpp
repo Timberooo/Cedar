@@ -251,6 +251,29 @@ namespace Cedar::Terminal
 
 
 
+    Mode getMode()
+    {
+        return g_internalData.mode;
+    }
+
+
+
+    void enableAltScreenBuffer(bool enable)
+    {
+        // TODO: See if this can be a non-OS-specific function.
+        if (g_internalData.altScreenBufferEnabled == enable)
+            return;
+
+        if (enable)
+            write("\033[?1049h");
+        else
+            write("\033[?1049l");
+
+        g_internalData.altScreenBufferEnabled = enable;
+    }
+
+
+
     void showCursor(bool show)
     {
         if (show)
@@ -396,15 +419,6 @@ namespace Cedar::Terminal
 
 
 
-    Mode getMode()
-    {
-        // TODO: See if this can be a non-OS-specific function when the Windows version
-        //       is implemented.
-        return g_internalData.mode;
-    }
-
-
-
     void setMode(Mode mode)
     {
         if (g_internalData.mode == mode)
@@ -430,21 +444,6 @@ namespace Cedar::Terminal
         
         (void)tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes);
         g_internalData.mode = mode;
-    }
-
-
-
-    void enableAltScreenBuffer(bool enable)
-    {
-        if (g_internalData.altScreenBufferEnabled == enable)
-            return;
-        
-        if (enable)
-            write("\033[?1049h");
-        else
-            write("\033[?1049l");
-
-        g_internalData.altScreenBufferEnabled = enable;
     }
 
 
@@ -507,14 +506,6 @@ namespace Cedar::Terminal
 
 
 
-    Mode getMode()
-    {
-        // TODO: See if this can be a non-OS-specific function.
-        return g_internalData.mode;
-    }
-
-
-
     void setMode(Mode mode)
     {
         if (g_internalData.mode == mode)
@@ -530,22 +521,6 @@ namespace Cedar::Terminal
 
         (void)SetConsoleMode(g_internalData.stdInputHandle, inputMode);
         g_internalData.mode = mode;
-    }
-
-
-
-    void enableAltScreenBuffer(bool enable)
-    {
-        // TODO: See if this can be a non-OS-specific function.
-        if (g_internalData.altScreenBufferEnabled == enable)
-            return;
-
-        if (enable)
-            write("\033[?1049h");
-        else
-            write("\033[?1049l");
-
-        g_internalData.altScreenBufferEnabled = enable;
     }
 
 
