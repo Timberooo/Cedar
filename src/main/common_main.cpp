@@ -2,6 +2,8 @@
 
 #include "../terminal.h"
 
+#include "../gui/anchor.h"
+
 #include <cstdlib>
 #include <exception>
 #include <string>
