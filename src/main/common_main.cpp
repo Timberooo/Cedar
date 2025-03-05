@@ -1,14 +1,13 @@
 #include "common_main.h"
 
 #include "../terminal.h"
+#include "../math.h"
 
 #include "../gui/anchor.h"
 
 #include <cstdlib>
 #include <exception>
 #include <string>
-
-#include "../math/array2d.h"
 
 
 
