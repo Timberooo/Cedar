@@ -5,6 +5,7 @@
 #ifndef CEDAR_MATH_H
 #define CEDAR_MATH_H
 
+#include "math/array2d.h"
 #include "math/math_common.h"
 #include "math/point.h"
 #include "math/rectangle.h"
