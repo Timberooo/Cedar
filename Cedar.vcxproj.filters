@@ -68,5 +68,8 @@
     <ClInclude Include="src\gui\anchor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\math\array2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

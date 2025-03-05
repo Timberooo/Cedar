@@ -8,6 +8,8 @@
 #include <exception>
 #include <string>
 
+#include "../math/array2d.h"
+
 
 
 namespace
@@ -15,6 +17,8 @@ namespace
     void logUnhandledException(const std::string& exceptionMsg);
 
     void unicodeByteTest();
+
+    void array2DTest();
 }
 
 
@@ -29,8 +33,10 @@ int commonMain(int argc, char* argv[])
         Cedar::Terminal::enableAltScreenBuffer(true);
         Cedar::Terminal::showCursor(false);
 
-        Cedar::Terminal::writeLine("Hello world! press 'Q' to quit");
+        array2DTest();
         unicodeByteTest();
+
+        Cedar::Terminal::writeLine("Hello world! press 'Q' to quit");
 
         char input;
 
@@ -74,6 +80,44 @@ namespace
         for (std::size_t i = 0; unicodeTest[i] != '\0'; i++)
             Cedar::Terminal::write(std::to_string(unicodeTest[i]) + " ");
 
+        Cedar::Terminal::write('\n');
+    }
+
+
+
+    void array2DTest()
+    {
+        Cedar::Array2D<Cedar::Color> guiTest(4, 4);
+        int color = 29;
+
+        for (std::size_t y = 0; y < guiTest.size().height; y++)
+        {
+            for (std::size_t x = 0; x < guiTest.size().width; x++)
+            {
+                if (color == 37)
+                    color = 90;
+                else if (color == 97)
+                    color = 30;
+                else
+                    color++;
+
+                guiTest.at(x, y) = (Cedar::Color)color;
+            }
+        }
+
+        guiTest.resize(16, 2, Cedar::Color::bright_blue);
+
+        for (std::size_t y = 0; y < guiTest.size().height; y++)
+        {
+            for (std::size_t x = 0; x < guiTest.size().width; x++)
+            {
+                Cedar::Terminal::setCursorPosition(x, y);
+                Cedar::Terminal::setBackgroundColor(guiTest.at(x, y));
+                Cedar::Terminal::write(' ');
+            }
+        }
+
+        Cedar::Terminal::resetBackgroundColor();
         Cedar::Terminal::write('\n');
     }
 }

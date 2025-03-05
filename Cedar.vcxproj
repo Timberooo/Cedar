@@ -150,6 +150,7 @@
     <ClInclude Include="src\gui\anchor.h" />
     <ClInclude Include="src\main\common_main.h" />
     <ClInclude Include="src\math.h" />
+    <ClInclude Include="src\math\array2d.h" />
     <ClInclude Include="src\math\math_common.h" />
     <ClInclude Include="src\math\point.h" />
     <ClInclude Include="src\math\rectangle.h" />
