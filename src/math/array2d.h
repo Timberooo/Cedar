@@ -5,6 +5,7 @@
 #ifndef CEDAR_MATH_ARRAY2D_H
 #define CEDAR_MATH_ARRAY2D_H
 
+#include "math_common.h"
 #include "point.h"
 #include "size.h"
 
@@ -26,15 +27,15 @@ namespace Cedar
     {
     public:
 
-        inline Array2D() : Array2D(0, 0) {}
+        inline Array2D();
 
         inline Array2D(Size2D<std::size_t> initSize);
 
-        inline Array2D(std::size_t width, std::size_t height) : Array2D(Size2D<std::size_t>{ width, height }) {}
+        inline Array2D(std::size_t width, std::size_t height);
 
         inline Array2D(Size2D<std::size_t> initSize, const T& value);
 
-        inline Array2D(std::size_t width, std::size_t height, const T& value) : Array2D(Size2D<std::size_t>{ width, height }, value) {}
+        inline Array2D(std::size_t width, std::size_t height, const T& value);
 
 
         inline bool empty() const;
@@ -72,20 +73,29 @@ namespace Cedar
 
         inline std::size_t stride() const;
 
-        void copyDataToNewData(std::vector<T>& newData, Size2D<std::size_t> newSize);
+        inline bool inBounds(Point2D<std::size_t> pos) const;
     };
 
 
 
     template <typename T>
-    inline Array2D<T>::Array2D(Size2D<std::size_t> initSize) : m_size(initSize) {
-        m_data = std::vector<T>(initSize.width * initSize.height);
-    }
+    inline Array2D<T>::Array2D() : Array2D(0, 0) {}
 
     template <typename T>
-    inline Array2D<T>::Array2D(Size2D<std::size_t> initSize, const T& value) : m_size(initSize) {
-        m_data = std::vector<T>(initSize.width * initSize.height, value);
-    }
+    inline Array2D<T>::Array2D(Size2D<std::size_t> initSize) :
+        m_data(initSize.width * initSize.height), m_size(initSize) {}
+
+    template <typename T>
+    inline Array2D<T>::Array2D(std::size_t width, std::size_t height) :
+        Array2D(Size2D<std::size_t>{ width, height }) {}
+
+    template <typename T>
+    inline Array2D<T>::Array2D(Size2D<std::size_t> initSize, const T& value) :
+        m_data(initSize.width * initSize.height, value), m_size(initSize) {}
+
+    template <typename T>
+    inline Array2D<T>::Array2D(std::size_t width, std::size_t height, const T& value) :
+        Array2D(Size2D<std::size_t>{ width, height }, value) {}
 
 
 
@@ -106,7 +116,7 @@ namespace Cedar
     template <typename T>
     T& Array2D<T>::at(Point2D<std::size_t> pos)
     {
-        if (pos.x >= size().width || pos.y >= size().height)
+        if (!inBounds(pos))
             throw std::out_of_range("Position was outside the 2D array");
 
         return m_data.at(index(pos, stride()));
@@ -120,7 +130,7 @@ namespace Cedar
     template <typename T>
     const T& Array2D<T>::at(Point2D<std::size_t> pos) const
     {
-        if (pos.x >= size().width || pos.y >= size().height)
+        if (!inBounds(pos))
             throw std::out_of_range("Position was outside the 2D array");
 
         return m_data.at(index(pos, stride()));
@@ -140,7 +150,12 @@ namespace Cedar
             return;
 
         std::vector<T> newData(newSize.width * newSize.height);
-        copyDataToNewData(newData, newSize);
+        std::size_t newStride = newSize.width;
+
+        for (std::size_t y = 0; y < ceiling(size().height, newSize.height); y++)
+            for (std::size_t x = 0; x < ceiling(size().width, newSize.width); x++)
+                newData.at(index({ x, y }, newStride)) = m_data.at(index({ x, y }, stride()));
+
         m_data = newData;
         m_size = newSize;
     }
@@ -157,7 +172,12 @@ namespace Cedar
             return;
 
         std::vector<T> newData(newSize.width * newSize.height, value);
-        copyDataToNewData(newData, newSize);
+        std::size_t newStride = newSize.width;
+
+        for (std::size_t y = 0; y < ceiling(size().height, newSize.height); y++)
+            for (std::size_t x = 0; x < ceiling(size().width, newSize.width); x++)
+                newData.at(index({ x, y }, newStride)) = m_data.at(index({ x, y }, stride()));
+
         m_data = newData;
         m_size = newSize;
     }
@@ -192,13 +212,8 @@ namespace Cedar
 
 
     template <typename T>
-    void Array2D<T>::copyDataToNewData(std::vector<T>& newData, Size2D<std::size_t> newSize)
-    {
-        std::size_t newStride = newSize.width;
-
-        for (std::size_t y = 0; y < size().height && y < newSize.height; y++)
-            for (std::size_t x = 0; x < size().width && x < newSize.width; x++)
-                newData.at(index({ x, y }, newStride)) = m_data.at(index({ x, y }, stride()));
+    inline bool Array2D<T>::inBounds(Point2D<std::size_t> pos) const {
+        return pos.x < size().width && pos.y < size().height;
     }
 }
 
