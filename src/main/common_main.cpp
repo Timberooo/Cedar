@@ -86,37 +86,60 @@ namespace
 
     void array2DTest()
     {
-        Cedar::Array2D<Cedar::Color> guiTest(4, 4);
-        int color = 29;
+        Cedar::Array2D<Cedar::Color> outputBuffer(10, 10, Cedar::Color::bright_blue);
+        Cedar::Array2D<Cedar::Color> yellowBox(3, 3, Cedar::Color::yellow);
+        Cedar::Array2D<Cedar::Color> redBox(5, 5, Cedar::Color::red);
 
-        for (std::size_t y = 0; y < guiTest.size().height; y++)
+        outputBuffer.insert(yellowBox, { 0, 0 }, { 0, 0 });
+        outputBuffer.insert(redBox, { 6, 8 }, { 4, 0 });
+
+        for (std::size_t y = 0; y < outputBuffer.size().height; y++)
         {
-            for (std::size_t x = 0; x < guiTest.size().width; x++)
+            Cedar::Terminal::setCursorPosition(0, y);
+
+            for (std::size_t x = 0; x < outputBuffer.size().width; x++)
             {
-                if (color == 37)
-                    color = 90;
-                else if (color == 97)
-                    color = 30;
-                else
-                    color++;
-
-                guiTest.at(x, y) = (Cedar::Color)color;
-            }
-        }
-
-        guiTest.resize(16, 2, Cedar::Color::bright_blue);
-
-        for (std::size_t y = 0; y < guiTest.size().height; y++)
-        {
-            for (std::size_t x = 0; x < guiTest.size().width; x++)
-            {
-                Cedar::Terminal::setCursorPosition(x, y);
-                Cedar::Terminal::setBackgroundColor(guiTest.at(x, y));
+                Cedar::Terminal::setBackgroundColor(outputBuffer.at(x, y));
                 Cedar::Terminal::write(' ');
             }
         }
 
         Cedar::Terminal::resetBackgroundColor();
         Cedar::Terminal::write('\n');
+
+
+
+        //Cedar::Array2D<Cedar::Color> guiTest(4, 4);
+        //int color = 29;
+
+        //for (std::size_t y = 0; y < guiTest.size().height; y++)
+        //{
+        //    for (std::size_t x = 0; x < guiTest.size().width; x++)
+        //    {
+        //        if (color == 37)
+        //            color = 90;
+        //        else if (color == 97)
+        //            color = 30;
+        //        else
+        //            color++;
+
+        //        guiTest.at(x, y) = (Cedar::Color)color;
+        //    }
+        //}
+
+        //guiTest.resize(16, 2, Cedar::Color::bright_blue);
+
+        //for (std::size_t y = 0; y < guiTest.size().height; y++)
+        //{
+        //    for (std::size_t x = 0; x < guiTest.size().width; x++)
+        //    {
+        //        Cedar::Terminal::setCursorPosition(x, y);
+        //        Cedar::Terminal::setBackgroundColor(guiTest.at(x, y));
+        //        Cedar::Terminal::write(' ');
+        //    }
+        //}
+
+        //Cedar::Terminal::resetBackgroundColor();
+        //Cedar::Terminal::write('\n');
     }
 }

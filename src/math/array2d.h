@@ -7,6 +7,7 @@
 
 #include "math_common.h"
 #include "point.h"
+#include "rectangle.h"
 #include "size.h"
 
 #include <cstddef>
@@ -61,6 +62,13 @@ namespace Cedar
         inline void resize(std::size_t width, std::size_t height, const T& value);
 
         inline void clear();
+
+
+        void insert(const Array2D& other, Point2D<std::size_t> pos);
+
+        void insert(const Array2D& other, Point2D<std::size_t> pos, Point2D<std::size_t> otherPos);
+
+        //void insert(const Array2D& other, Point2D<std::size_t> pos, Rectangle<std::size_t> otherRect);
 
     private:
 
@@ -193,6 +201,50 @@ namespace Cedar
     inline void Array2D<T>::clear() {
         m_data.clear();
         m_size = { 0, 0 };
+    }
+
+
+
+    template <typename T>
+    void Array2D<T>::insert(const Array2D<T>& other, Point2D<std::size_t> pos)
+    {
+        if (!inBounds(pos))
+            return;
+
+        Size2D<std::size_t> updateSize;
+        updateSize.width = size().width - pos.x;
+        updateSize.height = size().height - pos.y;
+
+        Size2D<std::size_t> copySize;
+        copySize.width = ceiling(updateSize.width, other.size().width);
+        copySize.height = ceiling(updateSize.height, other.size().height);
+
+        for (std::size_t y = 0; y < copySize.height; y++)
+            for (std::size_t x = 0; x < copySize.width; x++)
+                at(x + pos.x, y + pos.y) = other.at(x, y);
+    }
+
+    template <typename T>
+    void Array2D<T>::insert(const Array2D<T>& other, Point2D<std::size_t> pos, Point2D<std::size_t> otherPos)
+    {
+        if (!inBounds(pos) || !other.inBounds(otherPos))
+            return;
+
+        Size2D<std::size_t> updateSize;
+        updateSize.width = size().width - pos.x;
+        updateSize.height = size().height - pos.y;
+
+        Size2D<std::size_t> otherUpdateSize;
+        otherUpdateSize.width = other.size().width - otherPos.x;
+        otherUpdateSize.height = other.size().height - otherPos.y;
+
+        Size2D<std::size_t> copySize;
+        copySize.width = ceiling(updateSize.width, otherUpdateSize.width);
+        copySize.height = ceiling(updateSize.height, otherUpdateSize.height);
+
+        for (std::size_t y = 0; y < copySize.height; y++)
+            for (std::size_t x = 0; x < copySize.width; x++)
+                at(x + pos.x, y + pos.y) = other.at(x + otherPos.x, y + otherPos.y);
     }
 
 
