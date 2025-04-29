@@ -15,14 +15,21 @@
 
 namespace Cedar::GUI
 {
-    typedef char CP437Char;
-
     class IElement;
+    class IDrawableElement;
+    class ILayoutElement;
+
+    class LayoutLayer;
+    class LayoutTable;
 
 
+
+    // vvv IElement vvv
 
     class IElement : public std::enable_shared_from_this<IElement>
     {
+        friend ILayoutElement;
+
     public:
 
         enum class ValueType {
@@ -30,26 +37,13 @@ namespace Cedar::GUI
             relative
         };
 
-        struct Cell {
-            Color     color;
-            CP437Char character;
-        };
+
+        virtual void render(Size2D<int> windowSize, const Rectangle<int> limitBounds) = 0;
 
 
-        void draw(Size2D<int> windowSize, const Rectangle<int>& parentBounds);
+        inline bool hasParent() const;
 
-
-        inline bool isParent() const;
-
-        inline bool isChild() const;
-
-        inline std::shared_ptr<IElement> getParent() const;
-
-        template <typename TElement>
-        std::shared_ptr<TElement> addChild();
-
-        template <typename TElement>
-        void removeChild(std::shared_ptr<TElement> child);
+        inline std::shared_ptr<ILayoutElement> getParent() const;
 
 
         inline Anchor getAnchor() const;
@@ -114,20 +108,16 @@ namespace Cedar::GUI
         constexpr static Color defaultColor = Color::black;
 
 
-        virtual Array2D<Cell> render(Size2D<std::size_t> size) const = 0;
-
+        inline bool updated() const;
 
         void markAsUpdated();
 
-    private:
 
-        struct DimensionBounds {
-            int position;
-            int size;
-        };
-
+        Rectangle<int> calculateBounds(const Rectangle<int>& limitBounds) const;
 
         bool m_updated = true;
+
+    private:
 
         Anchor                              m_anchor = Anchor::center;
         Rectangle<std::variant<int, float>> m_bounds = { { 0, 0 }, { 0, 0 } };
@@ -135,16 +125,10 @@ namespace Cedar::GUI
         bool  m_useParentBackgroundColor = true;
         Color m_backgroundColor          = defaultColor;
 
-        std::weak_ptr<IElement>                m_parent;
-        std::vector<std::shared_ptr<IElement>> m_children;
+        std::weak_ptr<ILayoutElement> m_parent;
 
-
-        void printToTerminal(const Array2D<Cell>& renderOutput, Rectangle<int> bounds, Size2D<int> windowSize);
 
         static inline ValueType getValueType(std::size_t variantIndex);
-
-
-        Rectangle<int> calculateBounds(const Rectangle<int>& parentBounds) const;
 
         void calculateDimensionBounds(int& boundsPosition, int& boundsSize,
                                       std::variant<int, float> position,
@@ -157,52 +141,14 @@ namespace Cedar::GUI
 
 
 
-    inline bool IElement::isParent() const {
-        return !m_children.empty();
-    }
-
-
-
-    inline bool IElement::isChild() const {
+    inline bool IElement::hasParent() const {
         return !m_parent.expired();
     }
 
 
 
-    inline std::shared_ptr<IElement> IElement::getParent() const {
+    inline std::shared_ptr<ILayoutElement> IElement::getParent() const {
         return m_parent.lock();
-    }
-
-
-
-    template <typename TElement>
-    std::shared_ptr<TElement> IElement::addChild()
-    {
-        std::shared_ptr<TElement> child = std::make_shared<TElement>();
-
-        m_children.push_back(std::static_pointer_cast<IElement>(child));
-        child->m_parent = shared_from_this();
-        markAsUpdated();
-
-        return child;
-    }
-
-
-
-    template <typename TElement>
-    void IElement::removeChild(std::shared_ptr<TElement> child)
-    {
-        for (auto it = m_children.begin(); it != m_children.end(); it++)
-        {
-            if (*it == std::static_pointer_cast<IElement>(child))
-            {
-                m_children.erase(it);
-                markAsUpdated();
-                return;
-            }
-        }
-
-        throw std::invalid_argument("Invalid child element");
     }
 
 
@@ -231,8 +177,6 @@ namespace Cedar::GUI
         m_backgroundColor = defaultColor;
         markAsUpdated();
     }
-
-
 
     inline void IElement::setBackgroundColor(Color color) {
         m_useParentBackgroundColor = false;
@@ -354,9 +298,111 @@ namespace Cedar::GUI
 
 
 
+    inline bool IElement::updated() const {
+        return m_updated;
+    }
+
+
+
     inline IElement::ValueType IElement::getValueType(std::size_t variantIndex) {
         return (variantIndex == 0 ? ValueType::absolute : ValueType::relative);
     }
+
+
+
+    // vvv IDrawableElement vvv // ^^^ IElement ^^^
+
+    class IDrawableElement : public IElement
+    {
+    public:
+
+        void render(Size2D<int> windowSize, const Rectangle<int> limitBounds) final;
+
+    protected:
+
+        virtual Array2D<Color> draw(Size2D<std::size_t> size) const = 0;
+    };
+
+
+
+    // vvv ILayoutElement vvv // ^^^ IDrawableElement ^^^
+
+    class ILayoutElement : public IElement
+    {
+    public:
+
+        inline ILayoutElement();
+
+
+        inline bool hasChildren() const;
+
+        template <typename TElement>
+        std::shared_ptr<TElement> addChild();
+
+        template <typename TElement>
+        void removeChild(std::shared_ptr<TElement> child);
+
+    protected:
+
+        std::vector<std::shared_ptr<IElement>> m_children;
+    };
+
+
+
+    inline ILayoutElement::ILayoutElement() {
+        setRelativeWidth(1.0f);
+        setRelativeHeight(1.0f);
+    }
+
+
+
+    inline bool ILayoutElement::hasChildren() const {
+        return !m_children.empty();
+    }
+
+
+
+    template <typename TElement>
+    std::shared_ptr<TElement> ILayoutElement::addChild()
+    {
+        std::shared_ptr<TElement> child = std::make_shared<TElement>();
+
+        m_children.push_back(std::static_pointer_cast<IElement>(child));
+        child->m_parent = std::static_pointer_cast<ILayoutElement>(shared_from_this());
+        markAsUpdated();
+
+        return child;
+    }
+
+
+
+    template <typename TElement>
+    void ILayoutElement::removeChild(std::shared_ptr<TElement> child)
+    {
+        for (auto it = m_children.begin(); it != m_children.end(); it++)
+        {
+            if (*it == std::static_pointer_cast<IElement>(child))
+            {
+                child->m_parent.reset();
+                m_children.erase(it);
+                markAsUpdated();
+                return;
+            }
+        }
+
+        throw std::invalid_argument("Invalid child element");
+    }
+
+
+
+    // vvv LayoutLayer vvv // ^^^ ILayoutElement ^^^
+
+    class LayoutLayer : public ILayoutElement
+    {
+    public:
+
+        void render(Size2D<int> windowSize, const Rectangle<int> limitBounds) final;
+    };
 }
 
 #endif // CEDAR_GUI_IELEMENT_H

@@ -11,11 +11,11 @@ namespace Cedar::GUI
 
 
 
-    class Box : public IElement
+    class Box : public IDrawableElement
     {
-    public:
+    private:
 
-        Array2D<Cell> render(Size2D<std::size_t> size) const final;
+        Array2D<Color> draw(Size2D<std::size_t> size) const final;
     };
 }
 

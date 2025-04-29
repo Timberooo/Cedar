@@ -88,18 +88,21 @@ namespace
 
     void array2DTest()
     {
-        std::shared_ptr<Cedar::GUI::Box> box1 = std::make_shared<Cedar::GUI::Box>();
-        box1->setAbsoluteWidth(10);
-        box1->setAbsoluteHeight(3);
-        box1->setRelativeX(0.25f);
-        box1->setBackgroundColor(Cedar::Color::blue);
-        box1->setAnchor(Cedar::GUI::Anchor::left);
+        std::shared_ptr<Cedar::GUI::LayoutLayer> baseLayer = std::make_shared<Cedar::GUI::LayoutLayer>();
+
+        std::shared_ptr<Cedar::GUI::Box> box = baseLayer->addChild<Cedar::GUI::Box>();
+
+        box->setBackgroundColor(Cedar::Color::blue);
+        box->setAbsoluteWidth(10);
+        box->setAbsoluteHeight(3);
+        box->setRelativeX(0.25f);
+        box->setAnchor(Cedar::GUI::Anchor::left);
 
         Cedar::Rectangle<int> windowBounds;
         windowBounds.topLeft.x = 0;
         windowBounds.topLeft.y = 0;
         windowBounds.size = Cedar::Terminal::size();
 
-        box1->draw(windowBounds.size, windowBounds);
+        baseLayer->render(windowBounds.size, windowBounds);
     }
 }
