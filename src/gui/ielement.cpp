@@ -130,7 +130,7 @@ namespace Cedar::GUI
     {
         Rectangle<int> bounds = calculateBounds(limitBounds);
 
-        for (const auto child : m_children)
+        for (const auto& child : m_children)
         {
             child->render(windowSize, bounds);
         }
