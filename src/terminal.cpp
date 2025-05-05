@@ -260,7 +260,6 @@ namespace Cedar::Terminal
 
     void enableAltScreenBuffer(bool enable)
     {
-        // TODO: See if this can be a non-OS-specific function.
         if (g_internalData.altScreenBufferEnabled == enable)
             return;
 
