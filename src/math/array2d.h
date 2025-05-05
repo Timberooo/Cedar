@@ -32,9 +32,9 @@ namespace Cedar
 
         inline Array2D(Size2D<std::size_t> initSize);
 
-        inline Array2D(std::size_t width, std::size_t height);
-
         inline Array2D(Size2D<std::size_t> initSize, const T& value);
+
+        inline Array2D(std::size_t width, std::size_t height);
 
         inline Array2D(std::size_t width, std::size_t height, const T& value);
 
@@ -43,32 +43,48 @@ namespace Cedar
 
         inline Size2D<std::size_t> size() const;
 
+        inline bool inBounds(Point2D<std::size_t> pos) const;
+
+        inline bool inBounds(std::size_t x, std::size_t y) const;
+
 
         T& at(Point2D<std::size_t> pos);
 
-        inline T& at(std::size_t x, std::size_t y);
-
         const T& at(Point2D<std::size_t> pos) const;
+
+        inline T& at(std::size_t x, std::size_t y);
 
         inline const T& at(std::size_t x, std::size_t y) const;
 
 
         void resize(Size2D<std::size_t> newSize);
 
-        inline void resize(std::size_t width, std::size_t height);
-
         void resize(Size2D<std::size_t> newSize, const T& value);
+
+        inline void resize(std::size_t width, std::size_t height);
 
         inline void resize(std::size_t width, std::size_t height, const T& value);
 
         inline void clear();
 
 
-        void insert(const Array2D& other, Point2D<std::size_t> pos);
+        template <typename F>
+        inline void foreach(F func);
 
-        void insert(const Array2D& other, Point2D<std::size_t> pos, Point2D<std::size_t> otherPos);
+        template <typename F>
+        inline void foreach(F func) const;
 
-        //void insert(const Array2D& other, Point2D<std::size_t> pos, Rectangle<std::size_t> otherRect);
+        template <typename F>
+        void foreach(Point2D<std::size_t> start, Size2D<std::size_t> size, F func);
+
+        template <typename F>
+        void foreach(Point2D<std::size_t> start, Size2D<std::size_t> size, F func) const;
+
+        template <typename F>
+        inline void foreach(std::size_t xStart, std::size_t yStart, std::size_t width, std::size_t height, F func);
+
+        template <typename F>
+        inline void foreach(std::size_t xStart, std::size_t yStart, std::size_t width, std::size_t height, F func) const;
 
     private:
 
@@ -76,12 +92,14 @@ namespace Cedar
         Size2D<std::size_t> m_size;
 
 
-        static inline std::size_t index(Point2D<std::size_t> pos, std::size_t stride);
-
-
         inline std::size_t stride() const;
 
-        inline bool inBounds(Point2D<std::size_t> pos) const;
+        inline std::size_t index(Point2D<std::size_t> pos) const;
+
+        inline std::size_t index(std::size_t x, std::size_t y) const;
+
+
+        void updateResizedData(Array2D<T>& newArray);
     };
 
 
@@ -94,12 +112,12 @@ namespace Cedar
         m_data(initSize.width * initSize.height), m_size(initSize) {}
 
     template <typename T>
-    inline Array2D<T>::Array2D(std::size_t width, std::size_t height) :
-        Array2D(Size2D<std::size_t>{ width, height }) {}
-
-    template <typename T>
     inline Array2D<T>::Array2D(Size2D<std::size_t> initSize, const T& value) :
         m_data(initSize.width * initSize.height, value), m_size(initSize) {}
+
+    template <typename T>
+    inline Array2D<T>::Array2D(std::size_t width, std::size_t height) :
+        Array2D(Size2D<std::size_t>{ width, height }) {}
 
     template <typename T>
     inline Array2D<T>::Array2D(std::size_t width, std::size_t height, const T& value) :
@@ -122,26 +140,38 @@ namespace Cedar
 
 
     template <typename T>
-    T& Array2D<T>::at(Point2D<std::size_t> pos)
-    {
-        if (!inBounds(pos))
-            throw std::out_of_range("Position was outside the 2D array");
-
-        return m_data.at(index(pos, stride()));
+    inline bool Array2D<T>::inBounds(Point2D<std::size_t> pos) const {
+        return (pos.x < size().width && pos.y < size().height);
     }
 
     template <typename T>
-    inline T& Array2D<T>::at(std::size_t x, std::size_t y) {
-        return at({ x, y });
+    inline bool Array2D<T>::inBounds(std::size_t x, std::size_t y) const {
+        return inBounds({ x, y });
+    }
+
+
+
+    template <typename T>
+    T& Array2D<T>::at(Point2D<std::size_t> pos)
+    {
+        if (inBounds(pos))
+            return m_data.at(index(pos));
+        else
+            throw std::out_of_range("Position was outside the 2D array");
     }
 
     template <typename T>
     const T& Array2D<T>::at(Point2D<std::size_t> pos) const
     {
-        if (!inBounds(pos))
+        if (inBounds(pos))
+            return m_data.at(index(pos));
+        else
             throw std::out_of_range("Position was outside the 2D array");
+    }
 
-        return m_data.at(index(pos, stride()));
+    template <typename T>
+    inline T& Array2D<T>::at(std::size_t x, std::size_t y) {
+        return at({ x, y });
     }
 
     template <typename T>
@@ -157,20 +187,8 @@ namespace Cedar
         if (newSize == size())
             return;
 
-        std::vector<T> newData(newSize.width * newSize.height);
-        std::size_t newStride = newSize.width;
-
-        for (std::size_t y = 0; y < ceiling(size().height, newSize.height); y++)
-            for (std::size_t x = 0; x < ceiling(size().width, newSize.width); x++)
-                newData.at(index({ x, y }, newStride)) = m_data.at(index({ x, y }, stride()));
-
-        m_data = newData;
-        m_size = newSize;
-    }
-
-    template <typename T>
-    inline void Array2D<T>::resize(std::size_t width, std::size_t height) {
-        resize({ width, height });
+        Array2D<T> newArray(newSize);
+        updateResizedData(newArray);
     }
 
     template <typename T>
@@ -179,15 +197,13 @@ namespace Cedar
         if (newSize == size())
             return;
 
-        std::vector<T> newData(newSize.width * newSize.height, value);
-        std::size_t newStride = newSize.width;
+        Array2D<T> newArray(newSize, value);
+        updateResizedData(newArray);
+    }
 
-        for (std::size_t y = 0; y < ceiling(size().height, newSize.height); y++)
-            for (std::size_t x = 0; x < ceiling(size().width, newSize.width); x++)
-                newData.at(index({ x, y }, newStride)) = m_data.at(index({ x, y }, stride()));
-
-        m_data = newData;
-        m_size = newSize;
+    template <typename T>
+    inline void Array2D<T>::resize(std::size_t width, std::size_t height) {
+        resize({ width, height });
     }
 
     template <typename T>
@@ -206,52 +222,45 @@ namespace Cedar
 
 
     template <typename T>
-    void Array2D<T>::insert(const Array2D<T>& other, Point2D<std::size_t> pos)
-    {
-        if (!inBounds(pos))
-            return;
-
-        Size2D<std::size_t> updateSize;
-        updateSize.width = size().width - pos.x;
-        updateSize.height = size().height - pos.y;
-
-        Size2D<std::size_t> copySize;
-        copySize.width = ceiling(updateSize.width, other.size().width);
-        copySize.height = ceiling(updateSize.height, other.size().height);
-
-        for (std::size_t y = 0; y < copySize.height; y++)
-            for (std::size_t x = 0; x < copySize.width; x++)
-                at(x + pos.x, y + pos.y) = other.at(x, y);
+    template <typename F>
+    inline void Array2D<T>::foreach(F func) {
+        foreach(0, 0, size().width, size().height, func);
     }
 
     template <typename T>
-    void Array2D<T>::insert(const Array2D<T>& other, Point2D<std::size_t> pos, Point2D<std::size_t> otherPos)
-    {
-        if (!inBounds(pos) || !other.inBounds(otherPos))
-            return;
-
-        Size2D<std::size_t> updateSize;
-        updateSize.width = size().width - pos.x;
-        updateSize.height = size().height - pos.y;
-
-        Size2D<std::size_t> otherUpdateSize;
-        otherUpdateSize.width = other.size().width - otherPos.x;
-        otherUpdateSize.height = other.size().height - otherPos.y;
-
-        Size2D<std::size_t> copySize;
-        copySize.width = ceiling(updateSize.width, otherUpdateSize.width);
-        copySize.height = ceiling(updateSize.height, otherUpdateSize.height);
-
-        for (std::size_t y = 0; y < copySize.height; y++)
-            for (std::size_t x = 0; x < copySize.width; x++)
-                at(x + pos.x, y + pos.y) = other.at(x + otherPos.x, y + otherPos.y);
+    template <typename F>
+    inline void Array2D<T>::foreach(F func) const {
+        foreach(0, 0, size().width, size().height, func);
     }
 
-
+    template <typename T>
+    template <typename F>
+    void Array2D<T>::foreach(Point2D<std::size_t> start, Size2D<std::size_t> size, F func)
+    {
+        for (std::size_t y = start.y; y < size.height; y++)
+            for (std::size_t x = start.x; x < size.width; x++)
+                func(Point2D<std::size_t>{ x, y });
+    }
 
     template <typename T>
-    inline std::size_t Array2D<T>::index(Point2D<std::size_t> pos, std::size_t stride) {
-        return pos.x + (pos.y * stride);
+    template <typename F>
+    void Array2D<T>::foreach(Point2D<std::size_t> start, Size2D<std::size_t> size, F func) const
+    {
+        for (std::size_t y = start.y; y < size.height; y++)
+            for (std::size_t x = start.x; x < size.width; x++)
+                func(Point2D<std::size_t>{ x, y });
+    }
+
+    template <typename T>
+    template <typename F>
+    inline void Array2D<T>::foreach(std::size_t xStart, std::size_t yStart, std::size_t width, std::size_t height, F func) {
+        foreach({ xStart, yStart }, { width, height }, func);
+    }
+
+    template <typename T>
+    template <typename F>
+    inline void Array2D<T>::foreach(std::size_t xStart, std::size_t yStart, std::size_t width, std::size_t height, F func) const {
+        foreach({ xStart, yStart }, { width, height }, func);
     }
 
 
@@ -264,8 +273,29 @@ namespace Cedar
 
 
     template <typename T>
-    inline bool Array2D<T>::inBounds(Point2D<std::size_t> pos) const {
-        return pos.x < size().width && pos.y < size().height;
+    inline std::size_t Array2D<T>::index(Point2D<std::size_t> pos) const {
+        return pos.x + (pos.y * stride());
+    }
+
+    template <typename T>
+    inline std::size_t Array2D<T>::index(std::size_t x, std::size_t y) const {
+        return index({ x, y });
+    }
+
+
+
+    template <typename T>
+    void Array2D<T>::updateResizedData(Array2D<T>& newArray)
+    {
+        foreach(0, 0,
+                ceiling(size().width, newArray.size().width),
+                ceiling(size().height, newArray.size().height),
+                [&](Point2D<std::size_t> pos)
+        {
+            newArray.m_data.at(newArray.index(pos.x, pos.y)) = m_data.at(index(pos.x, pos.y));
+        });
+
+        *this = newArray;
     }
 }
 

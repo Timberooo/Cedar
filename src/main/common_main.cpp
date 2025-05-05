@@ -20,6 +20,8 @@ namespace
     void unicodeByteTest();
 
     void array2DTest();
+
+    void guiTest();
 }
 
 
@@ -35,6 +37,7 @@ int commonMain(int argc, char* argv[])
         Cedar::Terminal::showCursor(false);
 
         array2DTest();
+        guiTest();
         unicodeByteTest();
 
         Cedar::Terminal::writeLine("Hello world! press 'Q' to quit");
@@ -87,6 +90,21 @@ namespace
 
 
     void array2DTest()
+    {
+        Cedar::Array2D<Cedar::Color> test;
+        test.resize(5, 2, Cedar::Color::red);
+        test.resize(1, 3);
+
+        test.foreach([&](Cedar::Point2D<std::size_t> pos)
+        {
+            Cedar::Terminal::setBackgroundColor(test.at(pos.x, pos.y));
+            Cedar::Terminal::write(' ');
+        });
+    }
+
+
+
+    void guiTest()
     {
         std::shared_ptr<Cedar::GUI::LayoutLayer> baseLayer = std::make_shared<Cedar::GUI::LayoutLayer>();
 

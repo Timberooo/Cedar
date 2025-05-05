@@ -103,25 +103,55 @@ namespace Cedar::GUI
 
         Array2D<Color> output = draw(size);
 
-        for (std::size_t y = 0; y < output.size().height; y++)
+        output.foreach([&](Point2D<std::size_t> cellPos)
         {
-            for (std::size_t x = 0; x < output.size().width; x++)
-            {
-                Point2D<int> pos;
-                pos.x = x + bounds.topLeft.x;
-                pos.y = y + bounds.topLeft.y;
+            Point2D<int> terminalPos;
+            terminalPos.x = cellPos.x + bounds.topLeft.x;
+            terminalPos.y = cellPos.y + bounds.topLeft.y;
 
-                if (pos.x >= 0 && pos.x <= windowSize.width &&
-                    pos.y >= 0 && pos.y <= windowSize.height)
-                {
-                    Terminal::setCursorPosition(pos.x, pos.y);
-                    Terminal::setBackgroundColor(output.at(x, y));
-                    Terminal::write(' ');
-                }
+            if (terminalPos.x >= 0 && terminalPos.x <= windowSize.width &&
+                terminalPos.y >= 0 && terminalPos.y <= windowSize.height)
+            {
+                Terminal::setCursorPosition(terminalPos);
+                Terminal::setBackgroundColor(output.at(cellPos));
+                Terminal::write(' ');
             }
-        }
+        });
 
         m_updated = false;
+
+
+
+        //if (!updated())
+        //    return;
+
+        //Rectangle<int> bounds = calculateBounds(limitBounds);
+
+        //Size2D<std::size_t> size;
+        //size.width = bounds.size.width;
+        //size.height = bounds.size.height;
+
+        //Array2D<Color> output = draw(size);
+
+        //for (std::size_t y = 0; y < output.size().height; y++)
+        //{
+        //    for (std::size_t x = 0; x < output.size().width; x++)
+        //    {
+        //        Point2D<int> pos;
+        //        pos.x = x + bounds.topLeft.x;
+        //        pos.y = y + bounds.topLeft.y;
+
+        //        if (pos.x >= 0 && pos.x <= windowSize.width &&
+        //            pos.y >= 0 && pos.y <= windowSize.height)
+        //        {
+        //            Terminal::setCursorPosition(pos.x, pos.y);
+        //            Terminal::setBackgroundColor(output.at(x, y));
+        //            Terminal::write(' ');
+        //        }
+        //    }
+        //}
+
+        //m_updated = false;
     }
 
 
