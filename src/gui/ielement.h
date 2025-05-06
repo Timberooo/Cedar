@@ -4,12 +4,11 @@
 #include "anchor.h"
 #include "../color.h"
 #include "../math.h"
+#include "../terminal.h"
 
 #include <cstddef>
 #include <memory>
-#include <stdexcept>
 #include <variant>
-#include <vector>
 
 
 
@@ -18,9 +17,6 @@ namespace Cedar::GUI
     class IElement;
     class IDrawableElement;
     class ILayoutElement;
-
-    class LayoutLayer;
-    class LayoutTable;
 
 
 
@@ -38,7 +34,7 @@ namespace Cedar::GUI
         };
 
 
-        virtual void render(Size2D<int> windowSize, const Rectangle<int> limitBounds) = 0;
+        inline void startRender();
 
 
         inline bool hasParent() const;
@@ -108,19 +104,23 @@ namespace Cedar::GUI
         constexpr static Color defaultColor = Color::black;
 
 
-        inline bool updated() const;
-
-        void markAsUpdated();
+        virtual void render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds) = 0;
 
 
-        Rectangle<int> calculateBounds(const Rectangle<int>& limitBounds) const;
+        static inline ValueType getValueType(std::size_t variantIndex);
 
-        bool m_updated = true;
+        int getValueAsInt(std::variant<int, float> value, int limitSize) const;
+
+
+        void markAsUpdated(bool updated = true);
+
+
+        Rectangle<int> globalBounds(const Rectangle<int>& parentGlobalBounds) const;
 
     private:
 
-        Anchor                              m_anchor = Anchor::center;
-        Rectangle<std::variant<int, float>> m_bounds = { { 0, 0 }, { 0, 0 } };
+        Anchor                              m_anchor      = Anchor::center;
+        Rectangle<std::variant<int, float>> m_localBounds = { { 0, 0 }, { 1.0f, 1.0f } };
 
         bool  m_useParentBackgroundColor = true;
         Color m_backgroundColor          = defaultColor;
@@ -128,16 +128,19 @@ namespace Cedar::GUI
         std::weak_ptr<ILayoutElement> m_parent;
 
 
-        static inline ValueType getValueType(std::size_t variantIndex);
-
-        void calculateDimensionBounds(int& boundsPosition, int& boundsSize,
-                                      std::variant<int, float> position,
-                                      std::variant<int, float> size,
-                                      bool anchorLeftOrTop, bool anchorRightOrBottom,
-                                      int parentPosition, int parentSize) const;
-
-        int getValueAsInt(std::variant<int, float> value, int parentDimensionSize) const;
+        void globalBoundsComponent(int& globalPosition, int& globalSize,
+                                   std::variant<int, float> localPosition,
+                                   std::variant<int, float> localSize,
+                                   bool anchorLeftOrTop, bool anchorRightOrBottom,
+                                   int parentGlobalPosition, int parentGlobalSize) const;
     };
+
+
+
+    inline void IElement::startRender() {
+        Size2D<int> windowSize = Terminal::size();
+        render(windowSize, { 0, 0, windowSize.width, windowSize.height });
+    }
 
 
 
@@ -187,119 +190,113 @@ namespace Cedar::GUI
 
 
     inline IElement::ValueType IElement::xPositionType() const {
-        return getValueType(m_bounds.topLeft.x.index());
+        return getValueType(m_localBounds.topLeft.x.index());
     }
 
 
 
     inline int IElement::getAbsoluteX() const {
-        return std::get<int>(m_bounds.topLeft.x);
+        return std::get<int>(m_localBounds.topLeft.x);
     }
 
     inline float IElement::getRelativeX() const {
-        return std::get<float>(m_bounds.topLeft.x);
+        return std::get<float>(m_localBounds.topLeft.x);
     }
 
 
 
     inline void IElement::setAbsoluteX(int x) {
-        m_bounds.topLeft.x = x;
+        m_localBounds.topLeft.x = x;
         markAsUpdated();
     }
 
     inline void IElement::setRelativeX(float x) {
-        m_bounds.topLeft.x = x;
+        m_localBounds.topLeft.x = x;
         markAsUpdated();
     }
 
 
 
     inline IElement::ValueType IElement::yPositionType() const {
-        return getValueType(m_bounds.topLeft.y.index());
+        return getValueType(m_localBounds.topLeft.y.index());
     }
 
 
 
     inline int IElement::getAbsoluteY() const {
-        return std::get<int>(m_bounds.topLeft.y);
+        return std::get<int>(m_localBounds.topLeft.y);
     }
 
     inline float IElement::getRelativeY() const {
-        return std::get<float>(m_bounds.topLeft.y);
+        return std::get<float>(m_localBounds.topLeft.y);
     }
 
 
 
     inline void IElement::setAbsoluteY(int y) {
-        m_bounds.topLeft.y = y;
+        m_localBounds.topLeft.y = y;
         markAsUpdated();
     }
 
     inline void IElement::setRelativeY(float y) {
-        m_bounds.topLeft.y = y;
+        m_localBounds.topLeft.y = y;
         markAsUpdated();
     }
 
 
 
     inline IElement::ValueType IElement::widthType() const {
-        return getValueType(m_bounds.size.width.index());
+        return getValueType(m_localBounds.size.width.index());
     }
 
 
 
     inline int IElement::getAbsoluteWidth() const {
-        return std::get<int>(m_bounds.size.width);
+        return std::get<int>(m_localBounds.size.width);
     }
 
     inline float IElement::getRelativeWidth() const {
-        return std::get<float>(m_bounds.size.width);
+        return std::get<float>(m_localBounds.size.width);
     }
 
 
 
     inline void IElement::setAbsoluteWidth(int width) {
-        m_bounds.size.width = width;
+        m_localBounds.size.width = width;
         markAsUpdated();
     }
 
     inline void IElement::setRelativeWidth(float width) {
-        m_bounds.size.width = width;
+        m_localBounds.size.width = width;
         markAsUpdated();
     }
 
 
 
     inline IElement::ValueType IElement::heightType() const {
-        return getValueType(m_bounds.size.height.index());
+        return getValueType(m_localBounds.size.height.index());
     }
 
 
 
     inline int IElement::getAbsoluteHeight() const {
-        return std::get<int>(m_bounds.size.height);
+        return std::get<int>(m_localBounds.size.height);
     }
 
     inline float IElement::getRelativeHeight() const {
-        return std::get<float>(m_bounds.size.height);
+        return std::get<float>(m_localBounds.size.height);
     }
 
 
 
     inline void IElement::setAbsoluteHeight(int height) {
-        m_bounds.size.height = height;
+        m_localBounds.size.height = height;
         markAsUpdated();
     }
 
     inline void IElement::setRelativeHeight(float height) {
-        m_bounds.size.height = height;
+        m_localBounds.size.height = height;
         markAsUpdated();
-    }
-
-
-
-    inline bool IElement::updated() const {
-        return m_updated;
     }
 
 
@@ -314,14 +311,21 @@ namespace Cedar::GUI
 
     class IDrawableElement : public IElement
     {
-    public:
-
-        void render(Size2D<int> windowSize, const Rectangle<int> limitBounds) final;
-
     protected:
 
-        virtual Array2D<Color> draw(Size2D<std::size_t> size) const = 0;
+        void render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds) final;
+
+
+        virtual Array2D<Color> draw(Size2D<std::size_t> bufferSize) const = 0;
+
+        inline Array2D<Color> draw(std::size_t bufferWidth, std::size_t bufferHeight) const;
     };
+
+
+
+    inline Array2D<Color> IDrawableElement::draw(std::size_t bufferWidth, std::size_t bufferHeight) const {
+        return draw({ bufferWidth, bufferHeight });
+    }
 
 
 
@@ -329,35 +333,50 @@ namespace Cedar::GUI
 
     class ILayoutElement : public IElement
     {
-    public:
-
-        inline ILayoutElement();
-
+    protected:
 
         inline bool hasChildren() const;
+
+        inline void resizeChildren(std::size_t newSize);
+
 
         template <typename TElement>
         std::shared_ptr<TElement> addChild();
 
         template <typename TElement>
-        void removeChild(std::shared_ptr<TElement> child);
+        std::shared_ptr<TElement> insertChild(std::size_t index);
 
-    protected:
+        template <typename TElement>
+        std::shared_ptr<TElement> setChild(std::size_t index);
+
+
+        //template <typename TElement>
+        //void removeChild(std::shared_ptr<TElement> child);
+
+        //void removeChild(std::size_t index);
+
+
+        inline const std::vector<std::shared_ptr<IElement>>& children() const;
+
+
+        inline void renderChild(std::shared_ptr<IElement> child, Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds);
+
+    private:
 
         std::vector<std::shared_ptr<IElement>> m_children;
     };
 
 
 
-    inline ILayoutElement::ILayoutElement() {
-        setRelativeWidth(1.0f);
-        setRelativeHeight(1.0f);
+    inline bool ILayoutElement::hasChildren() const {
+        return !m_children.empty();
     }
 
 
 
-    inline bool ILayoutElement::hasChildren() const {
-        return !m_children.empty();
+    inline void ILayoutElement::resizeChildren(std::size_t newSize) {
+        m_children.resize(newSize);
+        markAsUpdated();
     }
 
 
@@ -374,35 +393,43 @@ namespace Cedar::GUI
         return child;
     }
 
-
-
     template <typename TElement>
-    void ILayoutElement::removeChild(std::shared_ptr<TElement> child)
+    std::shared_ptr<TElement> ILayoutElement::insertChild(std::size_t index)
     {
-        for (auto it = m_children.begin(); it != m_children.end(); it++)
-        {
-            if (*it == std::static_pointer_cast<IElement>(child))
-            {
-                child->m_parent.reset();
-                m_children.erase(it);
-                markAsUpdated();
-                return;
-            }
-        }
+        std::shared_ptr<TElement> child = std::make_shared<TElement>();
 
-        throw std::invalid_argument("Invalid child element");
+        m_children.insert(m_children.begin() + index, std::static_pointer_cast<IElement>(child));
+        child->m_parent = std::static_pointer_cast<ILayoutElement>(shared_from_this());
+        markAsUpdated();
+
+        return child;
     }
 
 
 
-    // vvv LayoutLayer vvv // ^^^ ILayoutElement ^^^
-
-    class LayoutLayer : public ILayoutElement
+    template <typename TElement>
+    std::shared_ptr<TElement> ILayoutElement::setChild(std::size_t index)
     {
-    public:
+        std::shared_ptr<TElement> child = std::make_shared<TElement>();
 
-        void render(Size2D<int> windowSize, const Rectangle<int> limitBounds) final;
-    };
+        m_children.at(index) = std::static_pointer_cast<IElement>(child);
+        child->m_parent = std::static_pointer_cast<ILayoutElement>(shared_from_this());
+        markAsUpdated();
+
+        return child;
+    }
+
+
+
+    inline const std::vector<std::shared_ptr<IElement>>& ILayoutElement::children() const {
+        return m_children;
+    }
+
+
+
+    inline void ILayoutElement::renderChild(std::shared_ptr<IElement> child, Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds) {
+        child->render(windowSize, parentGlobalBounds);
+    }
 }
 
 #endif // CEDAR_GUI_IELEMENT_H

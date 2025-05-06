@@ -2,6 +2,9 @@
 #define CEDAR_GUI_BOX_H
 
 #include "ielement.h"
+#include "../math.h"
+
+#include <cstddef>
 
 
 
@@ -11,7 +14,7 @@ namespace Cedar::GUI
 
 
 
-    class Box : public IDrawableElement
+    class Box final : public IDrawableElement
     {
     private:
 

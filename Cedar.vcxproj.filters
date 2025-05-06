@@ -30,7 +30,13 @@
     <ClCompile Include="src\gui\ielement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\gui\box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,16 +77,22 @@
     <ClInclude Include="src\platform\windows\windows_common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gui\anchor.h">
+    <ClInclude Include="src\math\array2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\math\array2d.h">
+    <ClInclude Include="src\gui\anchor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\ielement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gui\layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\gui\box.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

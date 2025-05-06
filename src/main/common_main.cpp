@@ -6,6 +6,8 @@
 #include "../gui/anchor.h"
 #include "../gui/box.h"
 #include "../gui/ielement.h"
+#include "../gui/layer.h"
+#include "../gui/table.h"
 
 #include <cstdlib>
 #include <exception>
@@ -106,21 +108,43 @@ namespace
 
     void guiTest()
     {
-        std::shared_ptr<Cedar::GUI::LayoutLayer> baseLayer = std::make_shared<Cedar::GUI::LayoutLayer>();
+        auto baseLayer = std::make_shared<Cedar::GUI::Layer>();
 
-        std::shared_ptr<Cedar::GUI::Box> box = baseLayer->addChild<Cedar::GUI::Box>();
+        auto background = baseLayer->addChild<Cedar::GUI::Box>();
+        background->setBackgroundColor(Cedar::Color::black);
 
-        box->setBackgroundColor(Cedar::Color::blue);
-        box->setAbsoluteWidth(10);
-        box->setAbsoluteHeight(3);
-        box->setRelativeX(0.25f);
-        box->setAnchor(Cedar::GUI::Anchor::left);
+        auto menuLayer = baseLayer->addChild<Cedar::GUI::Layer>();
+        menuLayer->setAbsoluteWidth(20);
+        menuLayer->setAbsoluteHeight(11);
 
-        Cedar::Rectangle<int> windowBounds;
-        windowBounds.topLeft.x = 0;
-        windowBounds.topLeft.y = 0;
-        windowBounds.size = Cedar::Terminal::size();
+        auto menuBackground = menuLayer->addChild<Cedar::GUI::Box>();
+        menuBackground->setBackgroundColor(Cedar::Color::white);
 
-        baseLayer->render(windowBounds.size, windowBounds);
+        auto menuOptionsTable = menuLayer->addChild<Cedar::GUI::Table>();
+        menuOptionsTable->resize(1, 4);
+        menuOptionsTable->setBackgroundColor(Cedar::Color::blue);
+        menuOptionsTable->setAbsoluteColumnSize(0, 10);
+        menuOptionsTable->setAbsoluteRowSize(0, 2);
+        menuOptionsTable->setAbsoluteRowSize(1, 2);
+        menuOptionsTable->setAbsoluteRowSize(2, 2);
+        menuOptionsTable->setAbsoluteRowSize(3, 2);
+
+        auto resumeButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 0);
+        resumeButton->setAnchor(Cedar::GUI::Anchor::top);
+        resumeButton->setAbsoluteHeight(1);
+
+        auto newGameButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 1);
+        newGameButton->setAnchor(Cedar::GUI::Anchor::top);
+        newGameButton->setAbsoluteHeight(1);
+
+        auto optionsButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 2);
+        optionsButton->setAnchor(Cedar::GUI::Anchor::top);
+        optionsButton->setAbsoluteHeight(1);
+
+        auto quitButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 3);
+        quitButton->setAnchor(Cedar::GUI::Anchor::top);
+        quitButton->setAbsoluteHeight(1);
+
+        baseLayer->startRender();
     }
 }
