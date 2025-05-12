@@ -1,12 +1,10 @@
 #include "ielement.h"
 
-#include "anchor.h"
 #include "../color.h"
 #include "../math.h"
 #include "../terminal.h"
 
 #include <cmath>
-#include <cstddef>
 #include <memory>
 #include <variant>
 
@@ -24,30 +22,33 @@ namespace Cedar::GUI
 
 
 
-    int IElement::getValueAsInt(std::variant<int, float> value, int parentSize) const
+    int IElement::getValueAsInt(std::variant<int, float> value, int parentGlobalSize) const
     {
         if (getValueType(value.index()) == ValueType::absolute)
             return std::get<int>(value);
         else
         {
-            float relativeVal = std::get<float>(value);
+            float relativeValue = std::get<float>(value);
 
-            if (std::isinf(relativeVal) || std::isnan(relativeVal))
+            if (std::isinf(relativeValue) || std::isnan(relativeValue))
                 return 0;
             else
-                return static_cast<int>(std::round(relativeVal * parentSize));
+                return static_cast<int>(std::round(relativeValue * parentGlobalSize));
         }
     }
 
 
 
-    void IElement::markAsUpdated(bool updated)
+    void IElement::markAsUpdated(UpdateType type)
     {
-        // URGENT: Implement this function.
+        m_updated = type;
+
+        if (type != UpdateType::not_updated && type != UpdateType::new_data && hasParent())
+            getParent()->markAsUpdated(type);
     }
-    
-    
-    
+
+
+
     Rectangle<int> IElement::globalBounds(const Rectangle<int>& parentGlobalBounds) const
     {
         Rectangle<int> bounds;
@@ -92,17 +93,21 @@ namespace Cedar::GUI
 
 
 
-    void IDrawableElement::render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds)
+    void IDrawableElement::render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds, bool forceUpdate)
     {
-        // URGENT: Determine if update checks should be performed here or in the parent.
+        if (forceUpdate == false && updated() == UpdateType::not_updated)
+            return;
 
         Rectangle<int> bounds = globalBounds(parentGlobalBounds);
 
-        Array2D<Color> drawBuffer = draw(static_cast<std::size_t>(bounds.size.width),
-                                         static_cast<std::size_t>(bounds.size.height));
+        // URGENT: Change this Array2D's type to be some kind of cell struct with
+        //         information about the character and color of each position in the
+        //         buffer.
+        Array2D<Color> drawBuffer = draw({ static_cast<std::size_t>(bounds.size.width),
+                                           static_cast<std::size_t>(bounds.size.height) });
 
-        // IDEA: Restrict foreach to only iterate over the part of drawBuffer that's in
-        //       view of the terminal.
+        // IDEA: Restrict foreach to only interate over the part of drawBuffer that's in
+        //       view of the terminal rather than checking each individual position.
         drawBuffer.foreach([&](Point2D<std::size_t> bufferPos)
         {
             // TODO: Properly handle narrowing conversion.
@@ -111,13 +116,30 @@ namespace Cedar::GUI
             if (terminalPos.x >= 0 && terminalPos.x < windowSize.width &&
                 terminalPos.y >= 0 && terminalPos.y < windowSize.height)
             {
+                // URGENT: Change writing to the terminal to write the character in the
+                //         buffer position instead of a space.
                 // IDEA: Only set the cursor position at the start of each line.
+                // IDEA: Only set the background color when a color change is detected.
                 Terminal::setCursorPosition(terminalPos);
                 Terminal::setBackgroundColor(drawBuffer.at(bufferPos));
                 Terminal::write(' ');
             }
         });
 
-        markAsUpdated(false);
+        markAsUpdated(UpdateType::not_updated);
+    }
+
+
+
+    void ILayoutElement::removeChild(std::size_t index)
+    {
+        // URGENT: Implement this function.
+    }
+
+
+
+    void ILayoutElement::removeChildren(std::size_t firstIndex, std::size_t lastIndex)
+    {
+        // URGENT: Implement this function.
     }
 }

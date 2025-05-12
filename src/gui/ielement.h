@@ -4,11 +4,11 @@
 #include "anchor.h"
 #include "../color.h"
 #include "../math.h"
-#include "../terminal.h"
 
 #include <cstddef>
 #include <memory>
 #include <variant>
+#include <vector>
 
 
 
@@ -32,9 +32,6 @@ namespace Cedar::GUI
             absolute,
             relative
         };
-
-
-        inline void startRender();
 
 
         inline bool hasParent() const;
@@ -101,26 +98,41 @@ namespace Cedar::GUI
 
     protected:
 
+        // NOTE: All update types except not_updated and new_data require the entire tree
+        //       of elements to be redrawn, hence the same value being used.
+        enum class UpdateType {
+            not_updated    = 0,
+            new_data       = 1,
+            resized        = 2,
+            moved          = 2,
+            child_modified = 2
+        };
+
+
         constexpr static Color defaultColor = Color::black;
 
 
-        virtual void render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds) = 0;
+        virtual void render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds, bool forceUpdate) = 0;
 
 
         static inline ValueType getValueType(std::size_t variantIndex);
 
-        int getValueAsInt(std::variant<int, float> value, int limitSize) const;
+        int getValueAsInt(std::variant<int, float> value, int parentGlobalSize) const;
 
 
-        void markAsUpdated(bool updated = true);
+        inline UpdateType updated() const;
+
+        void markAsUpdated(UpdateType type);
 
 
         Rectangle<int> globalBounds(const Rectangle<int>& parentGlobalBounds) const;
 
     private:
 
+        UpdateType m_updated = UpdateType::child_modified;
+
         Anchor                              m_anchor      = Anchor::center;
-        Rectangle<std::variant<int, float>> m_localBounds = { { 0, 0 }, { 1.0f, 1.0f } };
+        Rectangle<std::variant<int, float>> m_localBounds = { 0, 0, 1.0f, 1.0f };
 
         bool  m_useParentBackgroundColor = true;
         Color m_backgroundColor          = defaultColor;
@@ -134,13 +146,6 @@ namespace Cedar::GUI
                                    bool anchorLeftOrTop, bool anchorRightOrBottom,
                                    int parentGlobalPosition, int parentGlobalSize) const;
     };
-
-
-
-    inline void IElement::startRender() {
-        Size2D<int> windowSize = Terminal::size();
-        render(windowSize, { 0, 0, windowSize.width, windowSize.height });
-    }
 
 
 
@@ -164,7 +169,7 @@ namespace Cedar::GUI
 
     inline void IElement::setAnchor(Anchor anchor) {
         m_anchor = anchor;
-        markAsUpdated();
+        markAsUpdated(UpdateType::moved);
     }
 
 
@@ -178,13 +183,13 @@ namespace Cedar::GUI
     inline void IElement::setBackgroundColor() {
         m_useParentBackgroundColor = true;
         m_backgroundColor = defaultColor;
-        markAsUpdated();
+        markAsUpdated(UpdateType::new_data);
     }
 
     inline void IElement::setBackgroundColor(Color color) {
         m_useParentBackgroundColor = false;
         m_backgroundColor = color;
-        markAsUpdated();
+        markAsUpdated(UpdateType::new_data);
     }
 
 
@@ -207,12 +212,12 @@ namespace Cedar::GUI
 
     inline void IElement::setAbsoluteX(int x) {
         m_localBounds.topLeft.x = x;
-        markAsUpdated();
+        markAsUpdated(UpdateType::moved);
     }
 
     inline void IElement::setRelativeX(float x) {
         m_localBounds.topLeft.x = x;
-        markAsUpdated();
+        markAsUpdated(UpdateType::moved);
     }
 
 
@@ -235,12 +240,12 @@ namespace Cedar::GUI
 
     inline void IElement::setAbsoluteY(int y) {
         m_localBounds.topLeft.y = y;
-        markAsUpdated();
+        markAsUpdated(UpdateType::moved);
     }
 
     inline void IElement::setRelativeY(float y) {
         m_localBounds.topLeft.y = y;
-        markAsUpdated();
+        markAsUpdated(UpdateType::moved);
     }
 
 
@@ -263,12 +268,12 @@ namespace Cedar::GUI
 
     inline void IElement::setAbsoluteWidth(int width) {
         m_localBounds.size.width = width;
-        markAsUpdated();
+        markAsUpdated(UpdateType::resized);
     }
 
     inline void IElement::setRelativeWidth(float width) {
         m_localBounds.size.width = width;
-        markAsUpdated();
+        markAsUpdated(UpdateType::resized);
     }
 
 
@@ -291,12 +296,12 @@ namespace Cedar::GUI
 
     inline void IElement::setAbsoluteHeight(int height) {
         m_localBounds.size.height = height;
-        markAsUpdated();
+        markAsUpdated(UpdateType::resized);
     }
 
     inline void IElement::setRelativeHeight(float height) {
         m_localBounds.size.height = height;
-        markAsUpdated();
+        markAsUpdated(UpdateType::resized);
     }
 
 
@@ -307,25 +312,23 @@ namespace Cedar::GUI
 
 
 
+    inline IElement::UpdateType IElement::updated() const {
+        return m_updated;
+    }
+
+
+
     // vvv IDrawableElement vvv // ^^^ IElement ^^^
 
     class IDrawableElement : public IElement
     {
     protected:
 
-        void render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds) final;
+        void render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds, bool forceUpdate) final;
 
 
         virtual Array2D<Color> draw(Size2D<std::size_t> bufferSize) const = 0;
-
-        inline Array2D<Color> draw(std::size_t bufferWidth, std::size_t bufferHeight) const;
     };
-
-
-
-    inline Array2D<Color> IDrawableElement::draw(std::size_t bufferWidth, std::size_t bufferHeight) const {
-        return draw({ bufferWidth, bufferHeight });
-    }
 
 
 
@@ -333,12 +336,11 @@ namespace Cedar::GUI
 
     class ILayoutElement : public IElement
     {
-    protected:
+    public:
 
         inline bool hasChildren() const;
 
-        inline void resizeChildren(std::size_t newSize);
-
+    protected:
 
         template <typename TElement>
         std::shared_ptr<TElement> addChild();
@@ -350,33 +352,36 @@ namespace Cedar::GUI
         std::shared_ptr<TElement> setChild(std::size_t index);
 
 
-        //template <typename TElement>
-        //void removeChild(std::shared_ptr<TElement> child);
+        template <typename TElement>
+        void removeChild(std::shared_ptr<TElement> child);
 
-        //void removeChild(std::size_t index);
+        void removeChild(std::size_t index);
+
+        void removeChildren(std::size_t firstIndex, std::size_t lastIndex);
 
 
         inline const std::vector<std::shared_ptr<IElement>>& children() const;
 
+        inline void resizeChildren(std::size_t newSize);
 
-        inline void renderChild(std::shared_ptr<IElement> child, Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds);
+
+        inline void renderChild(std::shared_ptr<IElement> child, Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds, bool forceUpdate);
 
     private:
 
         std::vector<std::shared_ptr<IElement>> m_children;
+
+        // TODO: Implement viewport support, including automatic scroll bar rendering
+        //       when the viewport is smaller than m_localBounds.
+        // TODO: Implement viewport culling by skipping render calls to objects that are
+        //       completely outside of the viewport.
+        Rectangle<std::variant<int, float>> m_viewport = { 0, 0, 1.0f, 1.0f };
     };
 
 
 
     inline bool ILayoutElement::hasChildren() const {
         return !m_children.empty();
-    }
-
-
-
-    inline void ILayoutElement::resizeChildren(std::size_t newSize) {
-        m_children.resize(newSize);
-        markAsUpdated();
     }
 
 
@@ -388,10 +393,12 @@ namespace Cedar::GUI
 
         m_children.push_back(std::static_pointer_cast<IElement>(child));
         child->m_parent = std::static_pointer_cast<ILayoutElement>(shared_from_this());
-        markAsUpdated();
+        markAsUpdated(UpdateType::child_modified);
 
         return child;
     }
+
+
 
     template <typename TElement>
     std::shared_ptr<TElement> ILayoutElement::insertChild(std::size_t index)
@@ -400,7 +407,7 @@ namespace Cedar::GUI
 
         m_children.insert(m_children.begin() + index, std::static_pointer_cast<IElement>(child));
         child->m_parent = std::static_pointer_cast<ILayoutElement>(shared_from_this());
-        markAsUpdated();
+        markAsUpdated(UpdateType::child_modified);
 
         return child;
     }
@@ -414,9 +421,17 @@ namespace Cedar::GUI
 
         m_children.at(index) = std::static_pointer_cast<IElement>(child);
         child->m_parent = std::static_pointer_cast<ILayoutElement>(shared_from_this());
-        markAsUpdated();
+        markAsUpdated(UpdateType::child_modified);
 
         return child;
+    }
+
+
+
+    template <typename TElement>
+    void ILayoutElement::removeChild(std::shared_ptr<TElement> child)
+    {
+        // URGENT: Implement this function.
     }
 
 
@@ -427,8 +442,16 @@ namespace Cedar::GUI
 
 
 
-    inline void ILayoutElement::renderChild(std::shared_ptr<IElement> child, Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds) {
-        child->render(windowSize, parentGlobalBounds);
+    inline void ILayoutElement::resizeChildren(std::size_t newSize) {
+        m_children.resize(newSize);
+        markAsUpdated(UpdateType::child_modified);
+    }
+
+
+
+    inline void ILayoutElement::renderChild(std::shared_ptr<IElement> child, Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds, bool forceUpdate) {
+        // TODO: Figure out why this function is necessary because I forgor.
+        child->render(windowSize, parentGlobalBounds, forceUpdate);
     }
 }
 

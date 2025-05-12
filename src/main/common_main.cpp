@@ -1,13 +1,8 @@
 #include "common_main.h"
 
-#include "../terminal.h"
+#include "../gui.h"
 #include "../math.h"
-
-#include "../gui/anchor.h"
-#include "../gui/box.h"
-#include "../gui/ielement.h"
-#include "../gui/layer.h"
-#include "../gui/table.h"
+#include "../terminal.h"
 
 #include <cstdlib>
 #include <exception>
@@ -38,15 +33,32 @@ int commonMain(int argc, char* argv[])
         Cedar::Terminal::enableAltScreenBuffer(true);
         Cedar::Terminal::showCursor(false);
 
-        array2DTest();
-        guiTest();
-        unicodeByteTest();
+        //array2DTest();
+        //guiTest();
+        //unicodeByteTest();
 
-        Cedar::Terminal::writeLine("Hello world! press 'Q' to quit");
+        //Cedar::Terminal::writeLine("Hello world! press 'Q' to quit");
+
+
+
+        auto window = std::make_shared<Cedar::GUI::Window>();
+
+        auto background = window->addChild<Cedar::GUI::Box>();
+        background->setBackgroundColor(Cedar::Color::black);
+
+        auto menuLayer = window->addChild<Cedar::GUI::Layer>();
+        menuLayer->setAbsoluteWidth(20);
+        menuLayer->setAbsoluteHeight(11);
+
+        auto menuBackground = menuLayer->addChild<Cedar::GUI::Box>();
+        menuBackground->setBackgroundColor(Cedar::Color::white);
+
+
 
         char input;
 
         do {
+            window->render();
             input = Cedar::Terminal::getRawInput();
 
             if (input != '\0')
@@ -108,43 +120,59 @@ namespace
 
     void guiTest()
     {
-        auto baseLayer = std::make_shared<Cedar::GUI::Layer>();
+        auto window = std::make_shared<Cedar::GUI::Window>();
 
-        auto background = baseLayer->addChild<Cedar::GUI::Box>();
+        auto background = window->addChild<Cedar::GUI::Box>();
         background->setBackgroundColor(Cedar::Color::black);
 
-        auto menuLayer = baseLayer->addChild<Cedar::GUI::Layer>();
+        auto menuLayer = window->addChild<Cedar::GUI::Layer>();
         menuLayer->setAbsoluteWidth(20);
         menuLayer->setAbsoluteHeight(11);
 
         auto menuBackground = menuLayer->addChild<Cedar::GUI::Box>();
         menuBackground->setBackgroundColor(Cedar::Color::white);
 
-        auto menuOptionsTable = menuLayer->addChild<Cedar::GUI::Table>();
-        menuOptionsTable->resize(1, 4);
-        menuOptionsTable->setBackgroundColor(Cedar::Color::blue);
-        menuOptionsTable->setAbsoluteColumnSize(0, 10);
-        menuOptionsTable->setAbsoluteRowSize(0, 2);
-        menuOptionsTable->setAbsoluteRowSize(1, 2);
-        menuOptionsTable->setAbsoluteRowSize(2, 2);
-        menuOptionsTable->setAbsoluteRowSize(3, 2);
+        window->render();
 
-        auto resumeButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 0);
-        resumeButton->setAnchor(Cedar::GUI::Anchor::top);
-        resumeButton->setAbsoluteHeight(1);
 
-        auto newGameButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 1);
-        newGameButton->setAnchor(Cedar::GUI::Anchor::top);
-        newGameButton->setAbsoluteHeight(1);
 
-        auto optionsButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 2);
-        optionsButton->setAnchor(Cedar::GUI::Anchor::top);
-        optionsButton->setAbsoluteHeight(1);
+        //auto baseLayer = std::make_shared<Cedar::GUI::Layer>();
 
-        auto quitButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 3);
-        quitButton->setAnchor(Cedar::GUI::Anchor::top);
-        quitButton->setAbsoluteHeight(1);
+        //auto background = baseLayer->addChild<Cedar::GUI::Box>();
+        //background->setBackgroundColor(Cedar::Color::black);
 
-        baseLayer->startRender();
+        //auto menuLayer = baseLayer->addChild<Cedar::GUI::Layer>();
+        //menuLayer->setAbsoluteWidth(20);
+        //menuLayer->setAbsoluteHeight(11);
+
+        //auto menuBackground = menuLayer->addChild<Cedar::GUI::Box>();
+        //menuBackground->setBackgroundColor(Cedar::Color::white);
+
+        //auto menuOptionsTable = menuLayer->addChild<Cedar::GUI::Table>();
+        //menuOptionsTable->resize(1, 4);
+        //menuOptionsTable->setBackgroundColor(Cedar::Color::blue);
+        //menuOptionsTable->setAbsoluteColumnSize(0, 10);
+        //menuOptionsTable->setAbsoluteRowSize(0, 2);
+        //menuOptionsTable->setAbsoluteRowSize(1, 2);
+        //menuOptionsTable->setAbsoluteRowSize(2, 2);
+        //menuOptionsTable->setAbsoluteRowSize(3, 2);
+
+        //auto resumeButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 0);
+        //resumeButton->setAnchor(Cedar::GUI::Anchor::top);
+        //resumeButton->setAbsoluteHeight(1);
+
+        //auto newGameButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 1);
+        //newGameButton->setAnchor(Cedar::GUI::Anchor::top);
+        //newGameButton->setAbsoluteHeight(1);
+
+        //auto optionsButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 2);
+        //optionsButton->setAnchor(Cedar::GUI::Anchor::top);
+        //optionsButton->setAbsoluteHeight(1);
+
+        //auto quitButton = menuOptionsTable->setChild<Cedar::GUI::Box>(0, 3);
+        //quitButton->setAnchor(Cedar::GUI::Anchor::top);
+        //quitButton->setAbsoluteHeight(1);
+
+        //baseLayer->startRender();
     }
 }

@@ -4,13 +4,11 @@
 #include "ielement.h"
 #include "../math.h"
 
-#include <memory>
-
 
 
 namespace Cedar::GUI
 {
-    class Layer final : public ILayoutElement
+    class Layer : public ILayoutElement
     {
     public:
 
@@ -18,9 +16,15 @@ namespace Cedar::GUI
 
         using ILayoutElement::insertChild;
 
-    private:
+        using ILayoutElement::setChild;
 
-        void render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds) final;
+        using ILayoutElement::removeChild;
+
+        using ILayoutElement::removeChildren;
+
+    protected:
+
+        void render(Size2D<int> windowSize, const Rectangle<int>& parentGlobalBounds, bool forceUpdate) final;
     };
 }
 
