@@ -49,20 +49,33 @@ int commonMain(int argc, char* argv[])
         auto menuLayer = window->addChild<Cedar::GUI::Layer>();
         menuLayer->setAbsoluteWidth(20);
         menuLayer->setAbsoluteHeight(11);
+        menuLayer->setAnchor(Cedar::GUI::Anchor::center);
 
         auto menuBackground = menuLayer->addChild<Cedar::GUI::Box>();
         menuBackground->setBackgroundColor(Cedar::Color::white);
 
-
+        auto startButton = menuLayer->addChild<Cedar::GUI::Box>();
+        startButton->setBackgroundColor(Cedar::Color::blue);
+        startButton->setAbsoluteY(1);
+        startButton->setAnchor(Cedar::GUI::Anchor::top);
+        startButton->setAbsoluteHeight(1);
+        startButton->setAbsoluteWidth(5);
 
         char input;
 
         do {
             window->render();
+
             input = Cedar::Terminal::getRawInput();
 
-            if (input != '\0')
-                Cedar::Terminal::write(std::to_string(input) + " ");
+            if (input == 's')
+                menuLayer->setAbsoluteY(menuLayer->getAbsoluteY() + 1);
+            else if (input == 'w')
+                menuLayer->setAbsoluteY(menuLayer->getAbsoluteY() - 1);
+            else if (input == 'd')
+                menuLayer->setAbsoluteX(menuLayer->getAbsoluteX() + 1);
+            else if (input == 'a')
+                menuLayer->setAbsoluteX(menuLayer->getAbsoluteX() - 1);
         } while (input != 'q' && input != 'Q');
 
         exitStatus = EXIT_SUCCESS;
