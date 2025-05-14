@@ -53,6 +53,8 @@ namespace
     {
         char timestamp[9] = { '\0' };
 
+        // URGENT: Either find a cross-platform way to implement this function or have
+        //         OS-specific implementations. gmtime_s is a windows-specific function.
         std::time_t timeVal = std::time(nullptr);
         std::tm timeStruct;
         gmtime_s(&timeStruct, &timeVal);
