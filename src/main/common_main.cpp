@@ -1,18 +1,9 @@
 #include "common_main.h"
 
-#include "../math.h"
-#include "../io/terminal.h"
+#include "../io/log.h"
 
 #include <cstdlib>
 #include <exception>
-#include <string>
-
-
-
-namespace
-{
-    void logUnhandledException(const std::string& exceptionMsg);
-}
 
 
 
@@ -22,28 +13,23 @@ int commonMain(int argc, char* argv[])
 
     try
     {
-        Cedar::Terminal::setForegroundColor(Cedar::Terminal::Color::bright_green);
-        Cedar::Terminal::writeLine("This is a test");
+        Cedar::Log::setMinLevel(Cedar::Log::Level::debug);
+
+        Cedar::Log::debug("debug message");
+        Cedar::Log::info("info message");
+        Cedar::Log::warning("warning message");
+        Cedar::Log::error("error message");
+        Cedar::Log::critical("critical message");
+        Cedar::Log::fatal("fatal message");
 
         exitStatus = EXIT_SUCCESS;
     }
     catch(const std::exception& e) {
-        logUnhandledException(e.what());
+        Cedar::Log::fatal(e.what());
     }
     catch (...) {
-        logUnhandledException("An unknown exception occurred");
+        Cedar::Log::fatal("An unknown exception occurred");
     }
 
     return exitStatus;
-}
-
-
-
-namespace
-{
-    void logUnhandledException(const std::string& exceptionMsg)
-    {
-        Cedar::Terminal::enableAltScreenBuffer(false);
-        Cedar::Terminal::writeLine("Unhandled exception: " + exceptionMsg);
-    }
 }

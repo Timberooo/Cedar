@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\io\log.cpp" />
     <ClCompile Include="src\main\common_main.cpp" />
     <ClCompile Include="src\main\windows_main.cpp" />
     <ClCompile Include="src\platform\windows\windows_common.cpp" />
@@ -146,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core.h" />
+    <ClInclude Include="src\io\log.h" />
     <ClInclude Include="src\main\common_main.h" />
     <ClInclude Include="src\math.h" />
     <ClInclude Include="src\math\array2d.h" />
