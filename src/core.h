@@ -25,4 +25,19 @@
     #define PINE_DEBUG
 #endif
 
+// Compiler
+#if defined(_MSC_VER)
+    #define CEDAR_COMPILER_MSVC _MSC_VER
+#endif
+
+// Force inline
+#if defined(CEDAR_COMPILER_MSVC)
+    #define CEDAR_FORCE_INLINE __forceinline
+    #define CEDAR_FORCE_INLINE_SUPPORTED CEDAR_TRUE
+#else
+    // If compiler doesn't support forced inling, fallback to regular inlining
+    #define CEDAR_FORCE_INLINE inline
+    #define CEDAR_FORCE_INLINE_SUPPORTED CEDAR_FALSE
+#endif
+
 #endif // CEDAR_CORE_H
