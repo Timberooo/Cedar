@@ -2,8 +2,8 @@
 // Terminal.
 //
 
-#ifndef CEDAR_TERMINAL_H
-#define CEDAR_TERMINAL_H
+#ifndef CEDAR_IO_TERMINAL_H
+#define CEDAR_IO_TERMINAL_H
 
 #include "../math.h"
 
@@ -146,4 +146,4 @@ namespace Cedar::Terminal
     }
 }
 
-#endif // CEDAR_TERMINAL_H
+#endif // CEDAR_IO_TERMINAL_H
