@@ -139,26 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\gui\box.cpp" />
-    <ClCompile Include="src\gui\ielement.cpp" />
-    <ClCompile Include="src\gui\layer.cpp" />
-    <ClCompile Include="src\gui\table.cpp" />
-    <ClCompile Include="src\gui\window.cpp" />
     <ClCompile Include="src\main\common_main.cpp" />
     <ClCompile Include="src\main\windows_main.cpp" />
     <ClCompile Include="src\platform\windows\windows_common.cpp" />
     <ClCompile Include="src\terminal.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\color.h" />
     <ClInclude Include="src\core.h" />
-    <ClInclude Include="src\gui.h" />
-    <ClInclude Include="src\gui\anchor.h" />
-    <ClInclude Include="src\gui\box.h" />
-    <ClInclude Include="src\gui\ielement.h" />
-    <ClInclude Include="src\gui\layer.h" />
-    <ClInclude Include="src\gui\table.h" />
-    <ClInclude Include="src\gui\window.h" />
     <ClInclude Include="src\main\common_main.h" />
     <ClInclude Include="src\math.h" />
     <ClInclude Include="src\math\array2d.h" />
