@@ -1,7 +1,7 @@
 #include "common_main.h"
 
 #include "../math.h"
-#include "../terminal.h"
+#include "../io/terminal.h"
 
 #include <cstdlib>
 #include <exception>

@@ -142,7 +142,7 @@
     <ClCompile Include="src\main\common_main.cpp" />
     <ClCompile Include="src\main\windows_main.cpp" />
     <ClCompile Include="src\platform\windows\windows_common.cpp" />
-    <ClCompile Include="src\terminal.cpp" />
+    <ClCompile Include="src\io\terminal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core.h" />
@@ -156,7 +156,7 @@
     <ClInclude Include="src\math\vector.h" />
     <ClInclude Include="src\platform\windows.h" />
     <ClInclude Include="src\platform\windows\windows_common.h" />
-    <ClInclude Include="src\terminal.h" />
+    <ClInclude Include="src\io\terminal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

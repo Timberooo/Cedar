@@ -1,7 +1,7 @@
 #include "terminal.h"
 
-#include "core.h"
-#include "math.h"
+#include "../core.h"
+#include "../math.h"
 
 #include <cstddef>
 #include <new>
@@ -103,7 +103,7 @@ namespace
 
 #elif defined(CEDAR_OS_WINDOWS) // vvv Windows vvv // ^^^ Linux ^^^
 
-#include "platform/windows.h"
+#include "../platform/windows.h"
 
 
 
@@ -455,7 +455,7 @@ namespace Cedar::Terminal
 
 #elif defined(CEDAR_OS_WINDOWS) // vvv Windows vvv // ^^^ Linux ^^^
 
-#include "platform/windows.h"
+#include "../platform/windows.h"
 
 
 

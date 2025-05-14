@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\terminal.cpp">
+    <ClCompile Include="src\io\terminal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main\windows_main.cpp">
@@ -29,7 +29,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\terminal.h">
+    <ClInclude Include="src\io\terminal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\math.h">
