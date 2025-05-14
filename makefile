@@ -1,6 +1,6 @@
 CC     = g++
 TARGET = cedar
-FILES  = src/main/linux_main.cpp src/main/common_main.cpp src/terminal.cpp src/gui/box.cpp src/gui/ielement.cpp
+FILES  = src/main/linux_main.cpp src/main/common_main.cpp src/terminal.cpp
 
 STD_VERSION = -std=c++17
 WARNINGS    = -Wall
