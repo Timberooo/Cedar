@@ -144,6 +144,7 @@
     <ClCompile Include="src\main\windows_main.cpp" />
     <ClCompile Include="src\platform\windows\windows_common.cpp" />
     <ClCompile Include="src\io\terminal.cpp" />
+    <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="src\platform\windows.h" />
     <ClInclude Include="src\platform\windows\windows_common.h" />
     <ClInclude Include="src\io\terminal.h" />
+    <ClInclude Include="src\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
