@@ -157,7 +157,7 @@
     <ClInclude Include="src\math\rectangle.h" />
     <ClInclude Include="src\math\size.h" />
     <ClInclude Include="src\math\vector.h" />
-    <ClInclude Include="src\niftyCounter.h" />
+    <ClInclude Include="src\nifty_counter.h" />
     <ClInclude Include="src\platform\windows.h" />
     <ClInclude Include="src\platform\windows\windows_common.h" />
     <ClInclude Include="src\io\terminal.h" />
