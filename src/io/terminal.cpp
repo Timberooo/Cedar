@@ -19,6 +19,10 @@ namespace
 
 
 
+CEDAR_NIFTY_COUNTER_INTERNAL(InternalData, Initializer, Cedar::Terminal);
+
+
+
 // OS-specific implementation of InternalData
 #if defined(CEDAR_OS_LINUX) // vvv Linux vvv
 
@@ -213,54 +217,18 @@ namespace
 
 
 
-namespace
-{
-    // TODO: Change this to std::byte[] instead of std::aligned_storage since
-    //       std::aligned_storage is depreciated in C++23.
-
-    static typename std::aligned_storage<sizeof(InternalData), alignof(InternalData)>::type g_internalDataBuff;
-
-    InternalData& g_internalData = reinterpret_cast<InternalData&>(g_internalDataBuff);
-}
-
-
-
 namespace Cedar::Terminal
 {
-    std::size_t Initializer::s_counter = 0;
-
-
-
-    Initializer::Initializer()
-    {
-        if (s_counter == 0)
-            new (&g_internalData)InternalData();
-        
-        s_counter++;
-    }
-
-
-
-    Initializer::~Initializer()
-    {
-        s_counter--;
-
-        if (s_counter == 0)
-            g_internalData.~InternalData();
-    }
-
-
-
     Mode getMode()
     {
-        return g_internalData.mode;
+        return g_InternalData.mode;
     }
 
 
 
     void enableAltScreenBuffer(bool enable)
     {
-        if (g_internalData.altScreenBufferEnabled == enable)
+        if (g_InternalData.altScreenBufferEnabled == enable)
             return;
 
         if (enable)
@@ -268,7 +236,7 @@ namespace Cedar::Terminal
         else
             write("\033[?1049l");
 
-        g_internalData.altScreenBufferEnabled = enable;
+        g_InternalData.altScreenBufferEnabled = enable;
     }
 
 
@@ -420,7 +388,7 @@ namespace Cedar::Terminal
 
     void setMode(Mode mode)
     {
-        if (g_internalData.mode == mode)
+        if (g_InternalData.mode == mode)
             return;
         
         termios attributes;
@@ -430,8 +398,8 @@ namespace Cedar::Terminal
         {
             attributes.c_iflag |= cookedModeInputFlags;
             attributes.c_lflag |= cookedModeOutputFlags;
-            attributes.c_cc[VMIN]  = g_internalData.originalAttributes.c_cc[VMIN];
-            attributes.c_cc[VTIME] = g_internalData.originalAttributes.c_cc[VTIME];
+            attributes.c_cc[VMIN]  = g_InternalData.originalAttributes.c_cc[VMIN];
+            attributes.c_cc[VTIME] = g_InternalData.originalAttributes.c_cc[VTIME];
         }
         else // Mode::raw
         {
@@ -442,7 +410,7 @@ namespace Cedar::Terminal
         }
         
         (void)tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes);
-        g_internalData.mode = mode;
+        g_InternalData.mode = mode;
     }
 
 
@@ -463,12 +431,12 @@ namespace Cedar::Terminal
 {
     void write(std::string_view str)
     {
-        (void)WriteConsoleA(g_internalData.stdOutputHandle, str.data(), str.length(), NULL, NULL);
+        (void)WriteConsoleA(g_InternalData.stdOutputHandle, str.data(), str.length(), NULL, NULL);
     }
 
     void write(char character)
     {
-        (void)WriteConsoleA(g_internalData.stdOutputHandle, &character, 1, NULL, NULL);
+        (void)WriteConsoleA(g_InternalData.stdOutputHandle, &character, 1, NULL, NULL);
     }
 
 
@@ -478,13 +446,13 @@ namespace Cedar::Terminal
         char input = '\0';
 
         DWORD eventCount;
-        (void)GetNumberOfConsoleInputEvents(g_internalData.stdInputHandle, &eventCount);
+        (void)GetNumberOfConsoleInputEvents(g_InternalData.stdInputHandle, &eventCount);
 
         for (std::size_t i = 0; i < eventCount; i++)
         {
             DWORD        eventsRead;
             INPUT_RECORD inputRecord;
-            (void)ReadConsoleInputA(g_internalData.stdInputHandle, &inputRecord, 1, &eventsRead);
+            (void)ReadConsoleInputA(g_InternalData.stdInputHandle, &inputRecord, 1, &eventsRead);
 
             if (inputRecord.EventType == KEY_EVENT && inputRecord.Event.KeyEvent.bKeyDown)
                 input = inputRecord.Event.KeyEvent.uChar.AsciiChar;
@@ -498,7 +466,7 @@ namespace Cedar::Terminal
     Size2D<int> size()
     {
         CONSOLE_SCREEN_BUFFER_INFO csbi;
-        (void)GetConsoleScreenBufferInfo(g_internalData.stdOutputHandle, &csbi);
+        (void)GetConsoleScreenBufferInfo(g_InternalData.stdOutputHandle, &csbi);
 
         return { csbi.srWindow.Right - csbi.srWindow.Left + 1, csbi.srWindow.Bottom - csbi.srWindow.Top + 1 };
     }
@@ -507,19 +475,19 @@ namespace Cedar::Terminal
 
     void setMode(Mode mode)
     {
-        if (g_internalData.mode == mode)
+        if (g_InternalData.mode == mode)
             return;
 
         DWORD inputMode;
-        (void)GetConsoleMode(g_internalData.stdInputHandle, &inputMode);
+        (void)GetConsoleMode(g_InternalData.stdInputHandle, &inputMode);
 
         if (mode == Mode::cooked)
             inputMode |= cookedModeInputFlags;
         else // Mode::raw
             inputMode &= ~cookedModeInputFlags;
 
-        (void)SetConsoleMode(g_internalData.stdInputHandle, inputMode);
-        g_internalData.mode = mode;
+        (void)SetConsoleMode(g_InternalData.stdInputHandle, inputMode);
+        g_InternalData.mode = mode;
     }
 
 
@@ -537,7 +505,7 @@ namespace Cedar::Terminal
         COORD startCell = { 0, 0 };
         DWORD charsWritten;
 
-        (void)FillConsoleOutputCharacterA(g_internalData.stdOutputHandle, ' ', terminalSize.width * terminalSize.height, startCell, &charsWritten);
+        (void)FillConsoleOutputCharacterA(g_InternalData.stdOutputHandle, ' ', terminalSize.width * terminalSize.height, startCell, &charsWritten);
     }
 }
 
