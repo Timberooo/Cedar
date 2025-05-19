@@ -70,7 +70,7 @@ namespace
     {
         switch (level) {
             case Cedar::Log::Level::debug:
-                return "LEVEL";
+                return "DEBUG";
             case Cedar::Log::Level::info:
                 return "INFO ";
             case Cedar::Log::Level::warning:
@@ -81,6 +81,8 @@ namespace
                 return "CRIT ";
             case Cedar::Log::Level::fatal:
                 return "FATAL";
+            default:
+                return "LEVEL";
         }
     }
 }
