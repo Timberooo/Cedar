@@ -6,9 +6,8 @@
 #define CEDAR_IO_TERMINAL_H
 
 #include "../math.h"
-#include "../niftyCounter.h"
+#include "../nifty_counter.h"
 
-#include <cstddef>
 #include <string_view>
 
 

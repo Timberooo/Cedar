@@ -2,13 +2,12 @@
 
 #include "../core.h"
 #include "../math.h"
+#include "../nifty_counter.h"
 
 #include <cstddef>
-#include <new>
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <type_traits>
 
 
 
@@ -16,10 +15,6 @@ namespace
 {
     struct InternalData;
 }
-
-
-
-CEDAR_NIFTY_COUNTER_INTERNAL(InternalData, Initializer, Cedar::Terminal);
 
 
 
@@ -214,6 +209,10 @@ namespace
 }
 
 #endif // ^^^ Windows ^^^
+
+
+
+CEDAR_NIFTY_COUNTER_INTERNAL(InternalData, Initializer, Cedar::Terminal);
 
 
 

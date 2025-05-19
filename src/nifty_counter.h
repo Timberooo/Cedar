@@ -24,7 +24,7 @@ static counterName g_##counterName##;
 #define CEDAR_NIFTY_COUNTER_INTERNAL(internalStructName, counterName, counterNamespace)                                   \
 namespace                                                                                                                 \
 {                                                                                                                         \
-    static typename std::aligned_storage<sizeof(counterName), alignof(counterName)>::type g_##internalStructName##Buffer; \
+    static typename std::aligned_storage<sizeof(counterNamespace::counterName), alignof(counterNamespace::counterName)>::type g_##internalStructName##Buffer; \
     internalStructName& g_##internalStructName## = reinterpret_cast<internalStructName&>(g_##internalStructName##Buffer); \
 }                                                                                                                         \
                                                                                                                           \

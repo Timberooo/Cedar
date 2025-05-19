@@ -21,14 +21,14 @@ int commonMain(int argc, char* argv[])
         Cedar::Log::critical("critical message");
         Cedar::Log::fatal("fatal message");
 
-        Cedar::Window::Builder windowBuilder;
+        //Cedar::Window::Builder windowBuilder;
 
-        Cedar::Window window = windowBuilder.build();
+        //Cedar::Window window = windowBuilder.build();
 
-        while (Cedar::windowsOpen())
-        {
-            Cedar::pollEvents();
-        }
+        //while (Cedar::windowsOpen())
+        //{
+        //    Cedar::pollEvents();
+        //}
 
         exitStatus = EXIT_SUCCESS;
     }
