@@ -6,18 +6,14 @@
 #define CEDAR_IO_TERMINAL_H
 
 #include "../math.h"
-#include "../nifty_counter.h"
 
+#include <cstddef>
 #include <string_view>
 
 
 
 namespace Cedar::Terminal
 {
-    CEDAR_NIFTY_COUNTER_HEADER(Initializer);
-
-
-
     enum class Color {
         black          = 30,
         red            = 31,
@@ -101,6 +97,27 @@ namespace Cedar::Terminal
 
 
     void clear();
+
+
+
+    // NOTE: For internal use only.
+    class Initializer
+    {
+    public:
+
+        Initializer();
+
+        ~Initializer();
+
+    private:
+
+        static std::size_t s_counter;
+    };
+
+
+
+    // NOTE: For internal use only.
+    static Initializer initializer;
 
 
 
