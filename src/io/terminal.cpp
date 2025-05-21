@@ -34,14 +34,14 @@ namespace
     //       removed for parity.
 
     constexpr tcflag_t cookedModeInputFlags = IXON | // Ctrl-S and Ctrl-Q
-        ICRNL;   // Ctrl-M
+                                              ICRNL;  // Ctrl-M
 
-    constexpr tcflag_t cookedModeOutputFlags = ECHO | // Prints typed keys to the terminal
-        ICANON | // Read input line-by-line
-        ISIG | // Ctrl-C and Ctrl-Z
-        IEXTEN;  // Ctrl-V
+    constexpr tcflag_t cookedModeOutputFlags = ECHO   | // Prints typed keys to the terminal
+                                               ICANON | // Read input line-by-line
+                                               ISIG   | // Ctrl-C and Ctrl-Z
+                                               IEXTEN;  // Ctrl-V
 
-// NOTE: Currently unused. Not sure Windows has an equivalent.
+    // NOTE: Currently unused. Not sure Windows has an equivalent.
     constexpr tcflag_t newlineProcessingFlag = OPOST;   // Process "\n" as "\r\n"
 
 
@@ -110,11 +110,11 @@ namespace
 namespace
 {
     constexpr DWORD cookedModeInputFlags = ENABLE_ECHO_INPUT |
-        ENABLE_LINE_INPUT |
-        ENABLE_PROCESSED_INPUT;
+                                           ENABLE_LINE_INPUT |
+                                           ENABLE_PROCESSED_INPUT;
 
     constexpr DWORD vtProcessingOutputModeFlags = ENABLE_PROCESSED_OUTPUT |
-        ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+                                                  ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 
 
 
