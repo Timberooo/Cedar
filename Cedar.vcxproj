@@ -18,6 +18,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main\common_main.h" />
+    <ClInclude Include="src\platform\windows.h" />
+    <ClInclude Include="src\platform\windows\windows_common.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main\common_main.cpp" />
+    <ClCompile Include="src\main\windows_main.cpp" />
+    <ClCompile Include="src\platform\windows\windows_common.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
