@@ -2,7 +2,7 @@
 // Common math functions.
 //
 // Any math functions that do not have an equivalent or an easy to understand/use
-// equivalent in the C++ standard library and ae too generic to warrant their own header
+// equivalent in the C++ standard library and are too generic to warrant their own header
 // file should go here.
 //
 // Including other headers within this directory in this file is forbidden, as that poses
