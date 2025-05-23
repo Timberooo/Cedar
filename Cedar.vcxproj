@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main\common_main.h" />
+    <ClInclude Include="src\math.h" />
     <ClInclude Include="src\math\math_common.h" />
     <ClInclude Include="src\math\point.h" />
     <ClInclude Include="src\math\size.h" />
