@@ -39,6 +39,9 @@
     <ClInclude Include="src\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main\common_main.cpp">
