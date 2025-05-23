@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="src\main\common_main.h" />
     <ClInclude Include="src\math\math_common.h" />
+    <ClInclude Include="src\math\point.h" />
     <ClInclude Include="src\platform\windows.h" />
     <ClInclude Include="src\platform\windows\windows_common.h" />
   </ItemGroup>
