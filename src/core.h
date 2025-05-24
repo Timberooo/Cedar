@@ -22,7 +22,7 @@
 
 // Debug
 #if defined(_DEBUG) || defined(DEBUG)
-    #define PINE_DEBUG
+    #define CEDAR_DEBUG
 #endif
 
 // Compiler
