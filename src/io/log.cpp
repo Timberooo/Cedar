@@ -160,7 +160,7 @@ namespace Cedar::Log
                 Terminal::setColor(Terminal::Color::white, Terminal::Color::red); break;
         }
 
-        Terminal::write(getPrefix(level)); // TODO: Get prefix.
+        Terminal::write(getPrefix(level));
         Terminal::writeLine(msg);
 
         Terminal::resetColor();
