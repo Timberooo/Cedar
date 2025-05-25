@@ -92,7 +92,7 @@ namespace Cedar::Platform::Windows
     {
         bool result = convertWideStringToString(wstr, str);
 
-        if (!result)
+        if (result)
             Cedar::Log::error("Failed to convert wide string to string");
 
         return result;

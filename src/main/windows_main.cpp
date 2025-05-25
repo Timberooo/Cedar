@@ -31,7 +31,10 @@ char** convertArgs(int argc, wchar_t* argv[])
 
     for (int i = 0; i < argc; i++)
     {
-        std::string str = Cedar::Platform::Windows::wideStringToString(argv[i]);
+        // Using the try version of string conversion to minimize
+        // possible exceptions before commonMain is entered
+        std::string str;
+        Cedar::Platform::Windows::tryWideStringToString(argv[i], str);
 
         std::size_t argLength = str.length() + 1;
         argvConverted[i] = new char[argLength];
