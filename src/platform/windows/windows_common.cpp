@@ -1,5 +1,7 @@
 #include "windows_common.h"
 
+#include "../../io/log.h"
+
 #include <string>
 #include <string_view>
 #include <system_error>
@@ -63,8 +65,12 @@ namespace Cedar::Platform::Windows
 {
     bool tryStringToWideString(std::string_view str, std::wstring& wstr)
     {
-        // TODO: Log error before returning if conversion fails.
-        return convertStringToWideString(str, wstr);
+        bool result = convertStringToWideString(str, wstr);
+
+        if (!result)
+            Cedar::Log::error("Failed to convert string to wide string");
+
+        return result;
     }
 
 
@@ -84,8 +90,12 @@ namespace Cedar::Platform::Windows
 
     bool tryWideStringToString(std::wstring_view wstr, std::string& str)
     {
-        // TODO: Log error before returning if conversion fails.
-        return convertWideStringToString(wstr, str);
+        bool result = convertWideStringToString(wstr, str);
+
+        if (!result)
+            Cedar::Log::error("Failed to convert wide string to string");
+
+        return result;
     }
 
 
