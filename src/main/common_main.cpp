@@ -1,9 +1,12 @@
 #include "common_main.h"
 
+#include "../io/log.h"
 #include "../io/terminal.h"
 
 #include <cstdlib>
 #include <exception>
+
+#include <string>
 
 
 
@@ -13,20 +16,26 @@ int commonMain(int argc, char* argv[])
 
     try
     {
-        Cedar::Terminal::setForegroundColor(Cedar::Terminal::Color::bright_green);
-        Cedar::Terminal::writeLine("This shouldn't be written since there's no terminal yet");
-
         Cedar::Terminal::show(true);
-        Cedar::Terminal::setForegroundColor(Cedar::Terminal::Color::bright_magenta);
-        Cedar::Terminal::writeLine("This should be visible. Hello!");
+        Cedar::Log::setMinLevel(Cedar::Log::Level::trace);
+
+        CEDAR_LOG_TRACE("Entered commonMain");
+
+        for (int i = 1; i < argc; i++)
+        {
+            Cedar::Log::debug("Command: " + std::string(argv[i]));
+
+            if (argv[i] == "showconsole")
+                Cedar::Log::info("Started with command \"showconsole\"");
+        }
 
         exitStatus = EXIT_SUCCESS;
     }
     catch (const std::exception& e) {
-        // TODO: Log exception message.
+        Cedar::Log::fatal(e.what());
     }
     catch (...) {
-        // TODO: Log unknown exception message.
+        Cedar::Log::fatal("An unknown exception occurred");
     }
 
     return exitStatus;
