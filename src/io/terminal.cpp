@@ -9,6 +9,7 @@
 #include "../core.h"
 #include "../math.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <new>
@@ -169,8 +170,8 @@ namespace Cedar::Terminal
 
         Size2D<int> terminalSize = size();
 
-        position.x = clamp(position.x, 0, terminalSize.width - 1);
-        position.y = clamp(position.y, 0, terminalSize.height - 1);
+        position.x = std::clamp(position.x, 0, terminalSize.width - 1);
+        position.y = std::clamp(position.y, 0, terminalSize.height - 1);
 
         write("\033[" + std::to_string(position.y + 1) + ';' + std::to_string(position.x + 1) + 'H');
     }

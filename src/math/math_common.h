@@ -14,43 +14,7 @@
 
 namespace Cedar
 {
-    template <typename T>
-    inline T floor(T value, T min);
 
-    template <typename T>
-    inline T ceiling(T value, T max);
-
-    template <typename T>
-    inline T clamp(T value, T min, T max);
-
-
-
-    template <typename T>
-    inline T floor(T value, T min)
-    {
-        return value < min ? min : value;
-    }
-
-
-
-    template <typename T>
-    inline T ceiling(T value, T max)
-    {
-        return value > max ? max : value;
-    }
-
-
-
-    template <typename T>
-    inline T clamp(T value, T min, T max)
-    {
-        if (value < min)
-            value = min;
-        else if (value > max)
-            value = max;
-
-        return value;
-    }
 }
 
 #endif // CEDAR_MATH_MATH_COMMON_H
