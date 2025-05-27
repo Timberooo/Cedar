@@ -2,6 +2,7 @@
 
 #include "../io/log.h"
 #include "../io/terminal.h"
+#include "../window.h"
 
 #include <cstdlib>
 #include <exception>
@@ -21,12 +22,14 @@ int commonMain(int argc, char* argv[])
 
         CEDAR_LOG_TRACE("Entered commonMain");
 
-        for (int i = 1; i < argc; i++)
-        {
-            Cedar::Log::debug("Command: " + std::string(argv[i]));
+        Cedar::Window::Builder winBuilder;
+        winBuilder.title("Cedar Engine");
 
-            if (argv[i] == "showconsole")
-                Cedar::Log::info("Started with command \"showconsole\"");
+        Cedar::Window window = winBuilder.build();
+
+        while (Cedar::windowsOpen())
+        {
+            Cedar::pollEvents();
         }
 
         exitStatus = EXIT_SUCCESS;

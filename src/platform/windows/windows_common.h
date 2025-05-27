@@ -35,6 +35,15 @@ namespace Cedar::Platform::Windows
     bool tryWideStringToString(std::wstring_view wstr, std::string& str);
 
     std::string wideStringToString(std::wstring_view wstr);
+
+
+    inline HINSTANCE getInstance();
+
+
+
+    inline HINSTANCE getInstance() {
+        return GetModuleHandleW(NULL);
+    }
 }
 
 #endif // CEDAR_PLATFORM_WINDOWS_WINDOWS_COMMON_H
