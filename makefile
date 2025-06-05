@@ -1,8 +1,8 @@
 CC     = g++
 TARGET = cedar
-FILES  = 
+FILES  = src/main/common_main.cpp src/main/linux_main.cpp src/io/log.cpp src/io/terminal.cpp
 
-STD_VERSION = -std=c++17
+STD_VERSION = -std=c++20
 WARNINGS    = -Wall
 DEBUG_MACRO = -D CEDAR_DEBUG
 
