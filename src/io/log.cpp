@@ -145,24 +145,28 @@ namespace Cedar::Log
         if (level < getMinLevel())
             return;
 
+        Terminal::Color foregroundColor = Terminal::Color::use_default;
+        Terminal::Color backgroundColor = Terminal::Color::use_default;
+        
         switch (level) {
             case Level::trace:
-                Terminal::setForegroundColor(Terminal::Color::bright_black); break;
+                foregroundColor = Terminal::Color::bright_black; break;
             case Level::debug:
-                Terminal::setForegroundColor(Terminal::Color::bright_black); break;
+                foregroundColor = Terminal::Color::bright_black; break;
             case Level::info:
-                Terminal::setForegroundColor(Terminal::Color::white); break;
+                foregroundColor = Terminal::Color::white; break;
             case Level::warning:
-                Terminal::setForegroundColor(Terminal::Color::yellow); break;
+                foregroundColor = Terminal::Color::yellow; break;
             case Level::error:
-                Terminal::setForegroundColor(Terminal::Color::red); break;
-            default: // Level::critical and Level::fatal
-                Terminal::setColor(Terminal::Color::white, Terminal::Color::red); break;
+                foregroundColor = Terminal::Color::red; break;
+            default: { // Level::critical and Level::fatal
+                foregroundColor = Terminal::Color::white;
+                backgroundColor = Terminal::Color::red;
+                break;
+            }
         }
 
-        Terminal::write(getPrefix(level));
-        Terminal::writeLine(msg);
-
-        Terminal::resetColor();
+        Terminal::write(getPrefix(level), foregroundColor, backgroundColor);
+        Terminal::writeLine(msg, foregroundColor, backgroundColor);
     }
 }

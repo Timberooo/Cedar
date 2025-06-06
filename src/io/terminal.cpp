@@ -1,16 +1,8 @@
-//
-// This file makes heavy use of ANSI escape sequences, specifically the control sequence
-// introducer (CSI) with the string "\033[".
-// https://en.wikipedia.org/wiki/ANSI_escape_code#Control_Sequence_Introducer_commands
-//
-
 #include "terminal.h"
 
 #include "../core.h"
 #include "../math.h"
 
-#include <algorithm>
-#include <cassert>
 #include <cstddef>
 #include <new>
 #include <string>
@@ -35,24 +27,12 @@ namespace
 
 namespace
 {
-    constexpr DWORD cookedModeInputFlags = ENABLE_ECHO_INPUT |
-                                           ENABLE_LINE_INPUT |
-                                           ENABLE_PROCESSED_INPUT;
-
-    // Necessary for controlling the terminal through ANSI escape sequences
-    constexpr DWORD vtProcessingOutputModeFlags = ENABLE_PROCESSED_OUTPUT |
-                                                  ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-
-
-
     struct TerminalData
     {
         HANDLE inputHandle  = NULL;
         HANDLE outputHandle = NULL;
 
-        bool altScreenBufferEnabled = false;
-
-
+        
         inline TerminalData() {}
 
         inline ~TerminalData();
@@ -67,7 +47,10 @@ namespace
 
 #elif defined(CEDAR_OS_LINUX) // vvv Linux vvv // ^^^ Windows ^^^
 
-// TODO: Implement Linux version.
+namespace
+{
+    struct TerminalData {};
+}
 
 #endif // ^^^ Linux ^^^
 // OS-specific definition of TerminalData
@@ -113,102 +96,59 @@ namespace Cedar::Terminal
 
 
 // OS-agnostic implementation
+namespace
+{
+    enum class ColorType {
+        foreground = 0,
+        background = 10
+    };
+
+
+
+    void setColor(Cedar::Terminal::Color color, ColorType type);
+
+    inline void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor);
+
+    inline void resetColors();
+
+
+
+    void setColor(Cedar::Terminal::Color color, ColorType type)
+    {
+        if (color != Cedar::Terminal::Color::use_default)
+            Cedar::Terminal::write("\033[" + std::to_string(((int)color) + ((int)type)) + 'm');
+    }
+
+
+
+    inline void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor) {
+        setColor(foregroundColor, ColorType::foreground);
+        setColor(backgroundColor, ColorType::background);
+    }
+
+
+
+    inline void resetColors() {
+        Cedar::Terminal::write("\033[0m");
+    }
+}
+
+
+
 namespace Cedar::Terminal
 {
-    void showCursor(bool show)
+    void write(std::string_view str, Color foregroundColor, Color backgroundColor)
     {
-        if (show)
-            write("\033[?25h");
-        else
-            write("\033[?25l");
+        setColors(foregroundColor, backgroundColor);
+        write(str);
+        resetColors();
     }
 
-
-
-    void moveCursor(MoveCursorDirection direction, int amount)
+    void write(char character, Color foregroundColor, Color backgroundColor)
     {
-        if (amount < 1)
-            return;
-
-        write("\033[" + std::to_string(amount) + (char)direction);
-    }
-
-
-
-    void moveCursor(Vector2D<int> amount)
-    {
-        Vector2D<MoveCursorDirection> direction;
-
-        if (amount.x > 0)
-            direction.x = MoveCursorDirection::right;
-        else
-        {
-            direction.x = MoveCursorDirection::left;
-            amount.x *= -1;
-        }
-
-        if (amount.y > 0)
-            direction.y = MoveCursorDirection::down;
-        else
-        {
-            direction.y = MoveCursorDirection::up;
-            amount.y *= -1;
-        }
-
-        if (amount.x != 0)
-            write("\033[" + std::to_string(amount.x) + (char)direction.x);
-        if (amount.y != 0)
-            write("\033[" + std::to_string(amount.y) + (char)direction.y);
-    }
-
-
-
-    void setCursorPosition(Point2D<int> position)
-    {
-        if (!visible())
-            return;
-
-        Size2D<int> terminalSize = size();
-
-        position.x = std::clamp(position.x, 0, terminalSize.width - 1);
-        position.y = std::clamp(position.y, 0, terminalSize.height - 1);
-
-        write("\033[" + std::to_string(position.y + 1) + ';' + std::to_string(position.x + 1) + 'H');
-    }
-
-
-
-    void setForegroundColor(Color color)
-    {
-        write("\033[" + std::to_string((int)color) + 'm');
-    }
-
-
-
-    void setBackgroundColor(Color color)
-    {
-        write("\033[" + std::to_string(((int)color) + 10) + 'm');
-    }
-
-
-
-    void resetForegroundColor()
-    {
-        write("\033[39m");
-    }
-
-
-
-    void resetBackgroundColor()
-    {
-        write("\033[49m");
-    }
-
-
-
-    void resetColor()
-    {
-        write("\033[0m");
+        setColors(foregroundColor, backgroundColor);
+        write(character);
+        resetColors();
     }
 }
 // OS-agnostic implementation
@@ -219,6 +159,15 @@ namespace Cedar::Terminal
 #if defined(CEDAR_OS_WINDOWS) // vvv Windows vvv
 
 #include "../platform/windows.h"
+
+
+
+namespace
+{
+    // Necessary for controlling the terminal through ANSI escape sequences
+    constexpr DWORD vtProcessingOutputModeFlags = ENABLE_PROCESSED_OUTPUT |
+                                                  ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+}
 
 
 
@@ -236,7 +185,7 @@ namespace Cedar::Terminal
             g_terminalData.inputHandle = GetStdHandle(STD_INPUT_HANDLE);
             g_terminalData.outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-            // Make sure VT procerssing is enabled
+            // Make sure VT processing is enabled
             DWORD outputMode;
             (void)GetConsoleMode(g_terminalData.outputHandle, &outputMode);
             outputMode |= vtProcessingOutputModeFlags;
@@ -249,17 +198,12 @@ namespace Cedar::Terminal
             g_terminalData.inputHandle = NULL;
             g_terminalData.outputHandle = NULL;
         }
-
-        g_terminalData.altScreenBufferEnabled = false;
     }
 
 
 
     bool visible()
     {
-        assert((g_terminalData.outputHandle == NULL && g_terminalData.inputHandle == NULL) ||
-               (g_terminalData.outputHandle != NULL && g_terminalData.inputHandle != NULL));
-
         return g_terminalData.outputHandle != NULL;
     }
 
@@ -276,59 +220,43 @@ namespace Cedar::Terminal
         if (visible())
             (void)WriteConsoleA(g_terminalData.outputHandle, &character, 1, NULL, NULL);
     }
-
-
-
-    Size2D<int> size()
-    {
-        if (!visible())
-            return { 0, 0 };
-        else
-        {
-            CONSOLE_SCREEN_BUFFER_INFO csbi;
-            (void)GetConsoleScreenBufferInfo(g_terminalData.outputHandle, &csbi);
-
-            return { csbi.srWindow.Right - csbi.srWindow.Left + 1, csbi.srWindow.Bottom - csbi.srWindow.Top + 1 };
-        }
-    }
-
-
-
-    void enableAltScreenBuffer(bool enable)
-    {
-        if (!visible() || g_terminalData.altScreenBufferEnabled == enable)
-            return;
-
-        if (enable)
-            write("\033[?1049h");
-        else
-            write("\033[?1094l");
-
-        g_terminalData.altScreenBufferEnabled = enable;
-    }
-
-
-
-    void clear()
-    {
-        if (!visible())
-            return;
-
-        setCursorPosition(0, 0);
-        resetColor();
-
-        Size2D<int> terminalSize = size();
-
-        COORD startCell = { 0, 0 };
-        DWORD charsWritten;
-
-        (void)FillConsoleOutputCharacterA(g_terminalData.outputHandle, ' ', terminalSize.width * terminalSize.height, startCell, &charsWritten);
-    }
 }
 
 #elif defined(CEDAR_OS_LINUX) // vvv Linux vvv // ^^^ Windows ^^^
 
-// TODO: Implement Linux version.
+#include <unistd.h>
+
+
+
+namespace Cedar::Terminal
+{
+    void show(bool showTerminal)
+    {
+        // NOTE: This function and visible() only exist because of how Windows' console
+        //       vs window subsystem works. These functions aren't necessary for Linux.
+    }
+
+
+
+    bool visible()
+    {
+        // NOTE: This function and show() only exist because of how Windows' console vs
+        //       window subsystem works. These functions aren't necessary for Linux.
+        return true;
+    }
+
+
+
+    void write(std::string_view str)
+    {
+        (void)::write(STDOUT_FILENO, str.data(), str.length());
+    }
+
+    void write(char character)
+    {
+        (void)::write(STDOUT_FILENO, &character, 1);
+    }
+}
 
 #endif // ^^^ Linux ^^^
 // OS-specific implementation

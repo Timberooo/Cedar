@@ -1,5 +1,5 @@
 //
-// Support for interracting with and controlling the terminal.
+// OS-Agnostic support for outputting to the terminal.
 //
 
 #ifndef CEDAR_IO_TERMINAL_H
@@ -36,6 +36,7 @@ namespace Cedar::Terminal
 
 
     enum class Color {
+        use_default    = 0,
         black          = 30,
         red            = 31,
         green          = 32,
@@ -54,13 +55,6 @@ namespace Cedar::Terminal
         bright_white   = 97,
     };
 
-    enum class MoveCursorDirection {
-        up    = 65,
-        down  = 66,
-        right = 67,
-        left  = 68
-    };
-
 
 
     void show(bool showTerminal);
@@ -68,48 +62,23 @@ namespace Cedar::Terminal
     bool visible();
 
 
+
     void write(std::string_view str);
 
     void write(char character);
+
+    void write(std::string_view str, Color foregroundColor, Color backgroundColor);
+
+    void write(char character, Color foregroundColor, Color backgroundColor);
+
 
     inline void writeLine(std::string_view str);
 
     inline void writeLine(char character);
 
+    inline void writeLine(std::string_view str, Color foregroundColor, Color backgroundColor);
 
-    Size2D<int> size();
-
-
-    void enableAltScreenBuffer(bool enable);
-
-
-    void showCursor(bool show);
-
-    void moveCursor(MoveCursorDirection direction, int amount = 1);
-
-    void moveCursor(Vector2D<int> amount);
-
-    inline void moveCursor(int xAmount, int yAmount);
-
-    void setCursorPosition(Point2D<int> position);
-
-    inline void setCursorPosition(int x, int y);
-
-
-    inline void setColor(Color foregroundColor, Color backgroundColor);
-
-    void setForegroundColor(Color color);
-
-    void setBackgroundColor(Color color);
-
-    void resetForegroundColor();
-
-    void resetBackgroundColor();
-
-    void resetColor();
-
-
-    void clear();
+    inline void writeLine(char character, Color foregroundColor, Color backgroundColor);
 
 
 
@@ -123,23 +92,14 @@ namespace Cedar::Terminal
         write('\n');
     }
 
-
-
-    inline void moveCursor(int xAmount, int yAmount) {
-        moveCursor({ xAmount, yAmount });
+    inline void writeLine(std::string_view str, Color foregroundColor, Color backgroundColor) {
+        write(str, foregroundColor, backgroundColor);
+        write('\n');
     }
 
-
-
-    inline void setCursorPosition(int x, int y) {
-        setCursorPosition({ x, y });
-    }
-
-
-
-    inline void setColor(Color foregroundColor, Color backgroundColor) {
-        setForegroundColor(foregroundColor);
-        setBackgroundColor(backgroundColor);
+    inline void writeLine(char character, Color foregroundColor, Color backgroundColor) {
+        write(character, foregroundColor, backgroundColor);
+        write('\n');
     }
 }
 
