@@ -150,13 +150,13 @@ namespace Cedar::Log
         
         switch (level) {
             case Level::trace:
-                foregroundColor = Terminal::Color::bright_black; break;
+                foregroundColor = Terminal::Color::white; break;
             case Level::debug:
                 foregroundColor = Terminal::Color::bright_magenta; break;
             case Level::info:
-                foregroundColor = Terminal::Color::white; break;
+                foregroundColor = Terminal::Color::green; break;
             case Level::warning:
-                foregroundColor = Terminal::Color::yellow; break;
+                foregroundColor = Terminal::Color::bright_yellow; break;
             case Level::error:
                 foregroundColor = Terminal::Color::red; break;
             default: { // Level::critical and Level::fatal
