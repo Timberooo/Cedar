@@ -2,7 +2,6 @@
 
 #include "../io/log.h"
 #include "../io/terminal.h"
-#include "../window.h"
 
 #include <cstdlib>
 #include <exception>
@@ -22,15 +21,13 @@ int commonMain(int argc, char* argv[])
 
         CEDAR_LOG_TRACE("Entered commonMain");
 
-        Cedar::Window::Builder winBuilder;
-        winBuilder.title("Cedar Engine");
-
-        Cedar::Window window = winBuilder.build();
-
-        while (Cedar::windowsOpen())
-        {
-            Cedar::pollEvents();
-        }
+        CEDAR_LOG_TRACE("trace message");
+        CEDAR_LOG_DEBUG("debug message");
+        CEDAR_LOG_INFO("info message");
+        CEDAR_LOG_WARNING("warning message");
+        CEDAR_LOG_ERROR("error message");
+        CEDAR_LOG_CRITICAL("critical message");
+        CEDAR_LOG_FATAL("fatal message");
 
         exitStatus = EXIT_SUCCESS;
     }
