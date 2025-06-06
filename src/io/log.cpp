@@ -152,7 +152,7 @@ namespace Cedar::Log
             case Level::trace:
                 foregroundColor = Terminal::Color::bright_black; break;
             case Level::debug:
-                foregroundColor = Terminal::Color::bright_black; break;
+                foregroundColor = Terminal::Color::bright_magenta; break;
             case Level::info:
                 foregroundColor = Terminal::Color::white; break;
             case Level::warning:
