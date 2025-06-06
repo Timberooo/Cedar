@@ -57,9 +57,9 @@ namespace Cedar::Terminal
 
 
 
-    void show(bool showTerminal);
+    void enable(bool enableTerminal);
 
-    bool visible();
+    bool enabled();
 
 
 

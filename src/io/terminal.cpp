@@ -41,7 +41,7 @@ namespace
 
 
     inline TerminalData::~TerminalData() {
-        Cedar::Terminal::show(false);
+        Cedar::Terminal::enable(false);
     }
 }
 
@@ -173,12 +173,12 @@ namespace
 
 namespace Cedar::Terminal
 {
-    void show(bool showTerminal)
+    void enable(bool enableTerminal)
     {
-        if (showTerminal == visible())
+        if (enableTerminal == enabled())
             return;
 
-        if (showTerminal)
+        if (enableTerminal)
         {
             // TODO: Check result of AllocConsole.
             (void)AllocConsole();
@@ -202,7 +202,7 @@ namespace Cedar::Terminal
 
 
 
-    bool visible()
+    bool enabled()
     {
         return g_terminalData.outputHandle != NULL;
     }
@@ -211,13 +211,13 @@ namespace Cedar::Terminal
 
     void write(std::string_view str)
     {
-        if (visible())
+        if (enabled())
             (void)WriteConsoleA(g_terminalData.outputHandle, str.data(), str.length(), NULL, NULL);
     }
 
     void write(char character)
     {
-        if (visible())
+        if (enabled())
             (void)WriteConsoleA(g_terminalData.outputHandle, &character, 1, NULL, NULL);
     }
 }
@@ -230,17 +230,17 @@ namespace Cedar::Terminal
 
 namespace Cedar::Terminal
 {
-    void show(bool showTerminal)
+    void enable(bool enableTerminal)
     {
-        // NOTE: This function and visible() only exist because of how Windows' console
+        // NOTE: This function and enabled() only exist because of how Windows' console
         //       vs window subsystem works. These functions aren't necessary for Linux.
     }
 
 
 
-    bool visible()
+    bool enabled()
     {
-        // NOTE: This function and show() only exist because of how Windows' console vs
+        // NOTE: This function and enable() only exist because of how Windows' console vs
         //       window subsystem works. These functions aren't necessary for Linux.
         return true;
     }

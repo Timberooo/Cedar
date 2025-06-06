@@ -16,7 +16,7 @@ int commonMain(int argc, char* argv[])
 
     try
     {
-        Cedar::Terminal::show(true);
+        Cedar::Terminal::enable(true);
         Cedar::Log::setMinLevel(Cedar::Log::Level::trace);
 
         CEDAR_LOG_TRACE("Entered commonMain");
