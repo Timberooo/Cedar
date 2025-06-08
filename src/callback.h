@@ -20,7 +20,7 @@ namespace Cedar
 
         typedef TReturn (*Function)(TArgs...);
 
-        static constexpr bool ReturnsVoid = std::is_same<TReturn, void>::value;
+        static constexpr bool returnsVoid = std::is_same<TReturn, void>::value;
 
 
         inline bool canCall() const;
@@ -29,10 +29,10 @@ namespace Cedar
         TReturn call(TArgs... args);
         
 
-        template <typename T = TReturn, typename = typename std::enable_if<ReturnsVoid, T>::type>
+        template <typename T = TReturn, typename = typename std::enable_if<returnsVoid, T>::type>
         bool tryCall(TArgs... args);
 
-        template <typename T = TReturn, typename = typename std::enable_if<!ReturnsVoid, T>::type>
+        template <typename T = TReturn, typename = typename std::enable_if<!returnsVoid, T>::type>
         bool tryCall(T& returnVal, TArgs... args);
 
 
