@@ -30,26 +30,10 @@ namespace Cedar
         
 
         template <typename T = TReturn, typename = typename std::enable_if<ReturnsVoid, T>::type>
-        bool tryCall(TArgs... args)
-        {
-            bool called = canCall();
-
-            if (called)
-                m_function(args...);
-
-            return called;
-        }
+        bool tryCall(TArgs... args);
 
         template <typename T = TReturn, typename = typename std::enable_if<!ReturnsVoid, T>::type>
-        bool tryCall(T& returnVal, TArgs... args)
-        {
-            bool called = canCall();
-
-            if (called)
-                returnVal = m_function(args...);
-
-            return called;
-        }
+        bool tryCall(T& returnVal, TArgs... args);
 
 
         inline Function get() const;
@@ -77,6 +61,32 @@ namespace Cedar
             return m_function(args...);
         else
             throw std::logic_error("Callback function is null");
+    }
+
+
+
+    template <typename TReturn, typename... TArgs>
+    template <typename T, typename>
+    bool Callback<TReturn (*)(TArgs...)>::tryCall(TArgs... args)
+    {
+        bool called = canCall();
+
+        if (called)
+            m_function(args...);
+        
+        return called;
+    }
+
+    template <typename TReturn, typename... TArgs>
+    template <typename T, typename>
+    bool Callback<TReturn (*)(TArgs...)>::tryCall(T& returnVal, TArgs... args)
+    {
+        bool called = canCall();
+
+        if (called)
+            returnVal = m_function(args...);
+        
+        return called;
     }
 
 
