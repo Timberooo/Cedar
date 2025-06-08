@@ -2,6 +2,7 @@
 #define CEDAR_CALLBACK_H
 
 #include <exception>
+#include <type_traits>
 
 
 
@@ -9,7 +10,7 @@ namespace Cedar
 {
     template <typename TFunction>
     class Callback;
-
+    
 
 
     template <typename TReturn, typename... TArgs>
@@ -19,13 +20,36 @@ namespace Cedar
 
         typedef TReturn (*Function)(TArgs...);
 
-
-        TReturn call(TArgs... args);
-
-        bool tryCall(TReturn& returnVal, TArgs... args);
+        static constexpr bool ReturnsVoid = std::is_same<TReturn, void>::value;
 
 
         inline bool canCall() const;
+
+
+        TReturn call(TArgs... args);
+        
+
+        template <typename T = TReturn, typename = typename std::enable_if<ReturnsVoid, T>::type>
+        bool tryCall(TArgs... args)
+        {
+            bool called = canCall();
+
+            if (called)
+                m_function(args...);
+
+            return called;
+        }
+
+        template <typename T = TReturn, typename = typename std::enable_if<!ReturnsVoid, T>::type>
+        bool tryCall(T& returnVal, TArgs... args)
+        {
+            bool called = canCall();
+
+            if (called)
+                returnVal = m_function(args...);
+
+            return called;
+        }
 
 
         inline Function get() const;
@@ -40,32 +64,19 @@ namespace Cedar
 
 
     template <typename TReturn, typename... TArgs>
+    inline bool Callback<TReturn (*)(TArgs...)>::canCall() const {
+        return m_function != nullptr;
+    }
+
+
+
+    template <typename TReturn, typename... TArgs>
     TReturn Callback<TReturn (*)(TArgs...)>::call(TArgs... args)
     {
         if (canCall())
             return m_function(args...);
         else
             throw std::exception();
-    }
-
-
-
-    template <typename TReturn, typename... TArgs>
-    bool Callback<TReturn (*)(TArgs...)>::tryCall(TReturn& returnVal, TArgs... args)
-    {
-        bool success = canCall();
-
-        if (success)
-            returnVal = m_function(args...);
-        
-        return success;
-    }
-
-
-
-    template <typename TReturn, typename... TArgs>
-    inline bool Callback<TReturn (*)(TArgs...)>::canCall() const {
-        return m_function != nullptr;
     }
 
 
