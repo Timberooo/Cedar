@@ -1,7 +1,7 @@
 #ifndef CEDAR_CALLBACK_H
 #define CEDAR_CALLBACK_H
 
-#include <exception>
+#include <stdexcept>
 #include <type_traits>
 
 
@@ -76,7 +76,7 @@ namespace Cedar
         if (canCall())
             return m_function(args...);
         else
-            throw std::exception();
+            throw std::logic_error("Callback function is null");
     }
 
 
