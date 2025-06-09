@@ -51,6 +51,12 @@
     <ClInclude Include="src\window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\callback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main\common_main.cpp">
