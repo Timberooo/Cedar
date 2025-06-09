@@ -22,9 +22,9 @@ namespace
     struct LogData
     {
     #if defined(CEDAR_DEBUG)
-        Cedar::Log::Level minLevel = Cedar::Log::Level::trace;
+        Cedar::Log::Level minLevel = Cedar::Log::Level::Trace;
     #else
-        Cedar::Log::Level minLevel = Cedar::Log::Level::info;
+        Cedar::Log::Level minLevel = Cedar::Log::Level::Info;
     #endif
 
 
@@ -64,19 +64,19 @@ namespace
     std::string getLevelName(Cedar::Log::Level level)
     {
         switch (level) {
-            case Cedar::Log::Level::trace:
+            case Cedar::Log::Level::Trace:
                 return "TRACE";
-            case Cedar::Log::Level::debug:
+            case Cedar::Log::Level::Debug:
                 return "DEBUG";
-            case Cedar::Log::Level::info:
+            case Cedar::Log::Level::Info:
                 return "INFO ";
-            case Cedar::Log::Level::warning:
+            case Cedar::Log::Level::Warning:
                 return "WARN ";
-            case Cedar::Log::Level::error:
+            case Cedar::Log::Level::Error:
                 return "ERROR";
-            case Cedar::Log::Level::critical:
+            case Cedar::Log::Level::Critical:
                 return "CRIT ";
-            case Cedar::Log::Level::fatal:
+            case Cedar::Log::Level::Fatal:
                 return "FATAL";
             default: // Should never be hit but this shuts the compiler up
                 return "LEVEL";
@@ -145,23 +145,23 @@ namespace Cedar::Log
         if (level < getMinLevel())
             return;
 
-        Terminal::Color foregroundColor = Terminal::Color::use_default;
-        Terminal::Color backgroundColor = Terminal::Color::use_default;
+        Terminal::Color foregroundColor = Terminal::Color::Use_Default;
+        Terminal::Color backgroundColor = Terminal::Color::Use_Default;
         
         switch (level) {
-            case Level::trace:
-                foregroundColor = Terminal::Color::white; break;
-            case Level::debug:
-                foregroundColor = Terminal::Color::bright_magenta; break;
-            case Level::info:
-                foregroundColor = Terminal::Color::green; break;
-            case Level::warning:
-                foregroundColor = Terminal::Color::bright_yellow; break;
-            case Level::error:
-                foregroundColor = Terminal::Color::red; break;
-            default: { // Level::critical and Level::fatal
-                foregroundColor = Terminal::Color::white;
-                backgroundColor = Terminal::Color::red;
+            case Level::Trace:
+                foregroundColor = Terminal::Color::White; break;
+            case Level::Debug:
+                foregroundColor = Terminal::Color::Bright_Magenta; break;
+            case Level::Info:
+                foregroundColor = Terminal::Color::Green; break;
+            case Level::Warning:
+                foregroundColor = Terminal::Color::Bright_Yellow; break;
+            case Level::Error:
+                foregroundColor = Terminal::Color::Red; break;
+            default: { // Level::Critical and Level::Fatal
+                foregroundColor = Terminal::Color::White;
+                backgroundColor = Terminal::Color::Red;
                 break;
             }
         }

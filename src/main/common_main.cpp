@@ -2,11 +2,41 @@
 
 #include "../io/log.h"
 #include "../io/terminal.h"
+#include "../window.h"
 
 #include <cstdlib>
 #include <exception>
 
 #include <string>
+
+
+
+void windowClosedCallback()
+{
+    Cedar::Log::trace("Window closed");
+}
+
+
+
+bool windowClosingCallback()
+{
+    Cedar::Log::trace("Window closing");
+    return true;
+}
+
+
+
+void windowResizedCallback()
+{
+    Cedar::Log::trace("Window resized");
+}
+
+
+
+void keyPressedCallback(Cedar::Key key)
+{
+    Cedar::Log::trace("Key pressed: " + std::to_string((int)key));
+}
 
 
 
@@ -17,7 +47,7 @@ int commonMain(int argc, char* argv[])
     try
     {
         Cedar::Terminal::enable(true);
-        Cedar::Log::setMinLevel(Cedar::Log::Level::trace);
+        Cedar::Log::setMinLevel(Cedar::Log::Level::Trace);
 
         CEDAR_LOG_TRACE("Entered commonMain");
 
@@ -30,6 +60,18 @@ int commonMain(int argc, char* argv[])
         CEDAR_LOG_FATAL("fatal message");
 
         exitStatus = EXIT_SUCCESS;
+
+        Cedar::Window::open("Cedar Engine", { 50, 50 }, { 500, 300 });
+        Cedar::Window::setClosingCallback(windowClosingCallback);
+        Cedar::Window::setClosedCallback(windowClosedCallback);
+
+        while (Cedar::Window::isOpen())
+        {
+            Cedar::Log::trace("Polling events");
+            Cedar::Window::pollEvents();
+        }
+
+        Cedar::Log::trace("Program terminating");
     }
     catch (const std::exception& e) {
         Cedar::Log::fatal(e.what());

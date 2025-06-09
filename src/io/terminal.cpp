@@ -99,8 +99,8 @@ namespace Cedar::Terminal
 namespace
 {
     enum class ColorType {
-        foreground = 0,
-        background = 10
+        Foreground = 0,
+        Background = 10
     };
 
 
@@ -115,15 +115,15 @@ namespace
 
     void setColor(Cedar::Terminal::Color color, ColorType type)
     {
-        if (color != Cedar::Terminal::Color::use_default)
+        if (color != Cedar::Terminal::Color::Use_Default)
             Cedar::Terminal::write("\033[" + std::to_string(((int)color) + ((int)type)) + 'm');
     }
 
 
 
     inline void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor) {
-        setColor(foregroundColor, ColorType::foreground);
-        setColor(backgroundColor, ColorType::background);
+        setColor(foregroundColor, ColorType::Foreground);
+        setColor(backgroundColor, ColorType::Background);
     }
 
 

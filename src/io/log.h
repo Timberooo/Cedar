@@ -50,13 +50,13 @@ namespace Cedar::Log
 
 
     enum class Level {
-        trace    = CEDAR_LOG_LEVEL_TRACE,
-        debug    = CEDAR_LOG_LEVEL_DEBUG,
-        info     = CEDAR_LOG_LEVEL_INFO,
-        warning  = CEDAR_LOG_LEVEL_WARNING,
-        error    = CEDAR_LOG_LEVEL_ERROR,
-        critical = CEDAR_LOG_LEVEL_CRITICAL,
-        fatal    = CEDAR_LOG_LEVEL_FATAL,
+        Trace    = CEDAR_LOG_LEVEL_TRACE,
+        Debug    = CEDAR_LOG_LEVEL_DEBUG,
+        Info     = CEDAR_LOG_LEVEL_INFO,
+        Warning  = CEDAR_LOG_LEVEL_WARNING,
+        Error    = CEDAR_LOG_LEVEL_ERROR,
+        Critical = CEDAR_LOG_LEVEL_CRITICAL,
+        Fatal    = CEDAR_LOG_LEVEL_FATAL,
     };
 
 
@@ -85,43 +85,43 @@ namespace Cedar::Log
 
 
     CEDAR_FORCE_INLINE void trace(std::string_view msg) {
-        message(Level::trace, msg);
+        message(Level::Trace, msg);
     }
 
 
 
     CEDAR_FORCE_INLINE void debug(std::string_view msg) {
-        message(Level::debug, msg);
+        message(Level::Debug, msg);
     }
 
 
 
     CEDAR_FORCE_INLINE void info(std::string_view msg) {
-        message(Level::info, msg);
+        message(Level::Info, msg);
     }
 
 
 
     CEDAR_FORCE_INLINE void warning(std::string_view msg) {
-        message(Level::warning, msg);
+        message(Level::Warning, msg);
     }
 
 
 
     CEDAR_FORCE_INLINE void error(std::string_view msg) {
-        message(Level::error, msg);
+        message(Level::Error, msg);
     }
 
 
 
     CEDAR_FORCE_INLINE void critical(std::string_view msg) {
-        message(Level::critical, msg);
+        message(Level::Critical, msg);
     }
 
 
 
     CEDAR_FORCE_INLINE void fatal(std::string_view msg) {
-        message(Level::fatal, msg);
+        message(Level::Fatal, msg);
     }
 }
 
