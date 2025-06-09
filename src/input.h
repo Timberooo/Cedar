@@ -141,6 +141,13 @@ namespace Cedar
         Close_Bracket, /* ] */
         Apostrophe,    /* ' */
     };
+
+
+
+    enum class KeyState {
+        pressed,
+        released
+    };
 }
 
 #endif // CEDAR_INPUT_H
