@@ -9,6 +9,7 @@
 #include "math.h"
 
 #include <cstddef>
+#include <limits>
 #include <string>
 #include <string_view>
 
@@ -36,27 +37,33 @@ namespace Cedar::Window
     static WindowInitializer windowInitializer;
 
 
-    
+
     enum class Mode {
-        Windowed,
-        Fullscreen,
-        Fullscreen_Borderless
+        windowed,
+        fullscreen,
+        fullscreen_borderless
     };
 
     enum class Visibility {
-        Show,
-        Hide,
-        Minimize,
-        Maximize
+        show,
+        hide,
+        minimize,
+        maximize
     };
 
 
 
     typedef void (*ClosedFunc)();
     typedef bool (*ClosingFunc)();
-    typedef void (*ResizedFunc)();
     typedef void (*KeyPressedFunc)(Key key);
+    typedef void (*ResizedFunc)();
     typedef void (*VisibilityChangedFunc)();
+
+
+    
+    struct SizeLimits;
+
+    class OpenArgs;
 
 
 
@@ -67,72 +74,141 @@ namespace Cedar::Window
     };
 
 
-    
-    void setClosedCallback(ClosedFunc closedCallback);
 
-    void setClosingCallback(ClosingFunc closingCallback);
+    class OpenArgs
+    {
+    public:
 
-    void setResizedCallback(ResizedFunc resizedCallback);
+        static constexpr const char*  defaultTitle      = "";
+        static constexpr Point2D<int> defaultPosition   = { std::numeric_limits<int>::min(), std::numeric_limits<int>::min() };
+        static constexpr Size2D<int>  defaultSize       = { -1, -1 };
+        static constexpr Mode         defaultMode       = Mode::windowed;
+        static constexpr Visibility   defaultVisibility = Visibility::show;
 
-    void setKeyPressedCallback(KeyPressedFunc keyPressedCallback);
+
+        OpenArgs& title(std::string_view title = defaultTitle);
+
+        OpenArgs& position(Point2D<int> position = defaultPosition);
+
+        OpenArgs& position(int x, int y);
+
+        OpenArgs& size(Size2D<int> size = defaultSize);
+
+        OpenArgs& size(int width, int height);
+
+        OpenArgs& sizeLimits(SizeLimits sizeLimits = { defaultSize, defaultSize });
+
+        OpenArgs& sizeLimits(Size2D<int> minSize, Size2D<int> maxSize);
+
+        OpenArgs& sizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight);
+
+        OpenArgs& minSize(Size2D<int> minSize = defaultSize);
+
+        OpenArgs& minSize(int minWidth, int minHeight);
+
+        OpenArgs& maxSize(Size2D<int> maxSize = defaultSize);
+
+        OpenArgs& maxSize(int maxWidth, int maxHeight);
+
+        OpenArgs& mode(Mode mode = defaultMode);
+
+        OpenArgs& visibility(Visibility visibility = defaultVisibility);
+
+
+        std::string getTitle() const;
+
+        Point2D<int> getPosition() const;
+
+        Size2D<int> getSize() const;
+
+        SizeLimits getSizeLimits() const;
+
+        Mode getMode() const;
+
+        Visibility getVisibility() const;
+
+    private:
+
+        std::string  m_title      = defaultTitle;
+        Point2D<int> m_position   = defaultPosition;
+        Size2D<int>  m_size       = defaultSize;
+        SizeLimits   m_sizeLimits = { defaultSize, defaultSize };
+        Mode         m_mode       = defaultMode;
+        Visibility   m_visibility = defaultVisibility;
+    };
+
+
+
+    bool isOpen();
+
+    void open(const OpenArgs& openArgs = OpenArgs());
+
+    void close();
 
 
     void pollEvents();
 
 
-    bool isOpen();
+    ClosedFunc getClosedCallback();
 
-    void open(std::string_view title = "", Point2D<int> position = { -1, -1 }, Size2D<int> size = { -1, -1 }, SizeLimits sizeLimits = { { -1, -1 }, { -1, -1 } }, Mode mode = Mode::Windowed, Visibility visibility = Visibility::Show);
+    ClosingFunc getClosingCallback();
 
-    void close();
+    KeyPressedFunc getKeyPressedCallback();
+
+    ResizedFunc getResizedCallback();
+
+    VisibilityChangedFunc getVisibilityChangedCallback();
+
+
+    void setClosedCallback(ClosedFunc closedCallback);
+
+    void setClosingCallback(ClosingFunc closingCallback);
+
+    void setKeyPressedCallback(KeyPressedFunc keyPressedCallback);
+
+    void setResizedCallback(ResizedFunc resizedCallback);
+
+    void setVisibilityChangedCallback(VisibilityChangedFunc visibilityChangedCallback);
 
 
     std::string getTitle();
 
-    void setTitle(std::string_view title);
-
-
     Point2D<int> getPosition();
+
+    Size2D<int> getSize();
+
+    SizeLimits getSizeLimits();
+
+    Mode getMode();
+
+    Visibility getVisibility();
+
+
+    void setTitle(std::string_view title);
 
     void setPosition(Point2D<int> position);
 
-
-    Size2D<int> getSize();
+    void setPosition(int x, int y);
 
     void setSize(Size2D<int> size);
 
     void setSize(int width, int height);
 
-
-    SizeLimits getSizeLimits();
-
     void setSizeLimits(SizeLimits sizeLimits);
 
     void setSizeLimits(Size2D<int> minSize, Size2D<int> maxSize);
 
-    void setSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight);
-
-    
-    Size2D<int> getMinSize();
+    void setSizeLimits(int minwidth, int minHeight, int maxWidth, int maxHeight);
 
     void setMinSize(Size2D<int> minSize);
 
     void setMinSize(int minWidth, int minHeight);
 
-
-    Size2D<int> getMaxSize();
-
     void setMaxSize(Size2D<int> maxSize);
 
     void setMaxSize(int maxWidth, int maxHeight);
 
-
-    Mode getMode();
-
     void setMode(Mode mode);
-
-
-    Visibility getVisibility();
 
     void setVisibility(Visibility visibility);
 }

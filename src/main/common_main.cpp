@@ -40,6 +40,13 @@ void keyPressedCallback(Cedar::Key key)
 
 
 
+void visibilityChangedCallback()
+{
+    Cedar::Log::trace("Visibility changed");
+}
+
+
+
 int commonMain(int argc, char* argv[])
 {
     int exitStatus = EXIT_FAILURE;
@@ -61,9 +68,12 @@ int commonMain(int argc, char* argv[])
 
         exitStatus = EXIT_SUCCESS;
 
-        Cedar::Window::open("Cedar Engine", { 50, 50 }, { 500, 300 });
+        Cedar::Window::open(Cedar::Window::OpenArgs().title("Cedar Engine"));
+        
         Cedar::Window::setClosingCallback(windowClosingCallback);
         Cedar::Window::setClosedCallback(windowClosedCallback);
+        Cedar::Window::setResizedCallback(windowResizedCallback);
+        Cedar::Window::setKeyPressedCallback(keyPressedCallback);
 
         while (Cedar::Window::isOpen())
         {
