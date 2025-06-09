@@ -1,6 +1,6 @@
 CC     = g++
 TARGET = cedar
-FILES  = src/main/common_main.cpp src/main/linux_main.cpp src/io/log.cpp src/io/terminal.cpp
+FILES  = src/main/common_main.cpp src/main/linux_main.cpp src/io/log.cpp src/io/terminal.cpp src/window.cpp
 
 STD_VERSION = -std=c++20
 WARNINGS    = -Wall
@@ -17,7 +17,7 @@ clean:
 	rm -f $(TARGET) $(DEBUG_TARGET)
 
 debug:
-	$(CC) -o $(DEBUG_TARGET) $(DEBUG_FLAGS) $(FILES)
+	$(CC) -o $(DEBUG_TARGET) $(DEBUG_FLAGS) $(FILES) -lX11
 
 release:
-	$(CC) -o $(TARGET) $(FLAGS) $(FILES)
+	$(CC) -o $(TARGET) $(FLAGS) $(FILES) -lX11
