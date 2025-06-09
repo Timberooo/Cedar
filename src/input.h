@@ -129,17 +129,17 @@ namespace Cedar
         Volume_Down,
         Volume_Up,
 
-        Semicolon     /* ; */,
-        Equal         /* = */,
-        Comma         /* , */,
-        Minus         /* - */,
-        Period        /* . */,
-        Slash         /* / */,
-        Grave_Accent  /* ` */,
-        Open_Bracket  /* [ */,
-        Backslash     /* \ */,
-        Close_Bracket /* ] */,
-        Apostrophe    /* ' */
+        Semicolon,     /* ; */
+        Equal,         /* = */
+        Comma,         /* , */
+        Minus,         /* - */
+        Period,        /* . */
+        Slash,         /* / */
+        Grave_Accent,  /* ` */
+        Open_Bracket,  /* [ */
+        Backslash,     /* \ */
+        Close_Bracket, /* ] */
+        Apostrophe,    /* ' */
     };
 }
 
