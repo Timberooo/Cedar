@@ -39,16 +39,16 @@ namespace Cedar::Window
 
 
     enum class Mode {
-        windowed,
-        fullscreen,
-        fullscreen_borderless
+        Windowed,
+        Fullscreen,
+        Fullscreen_borderless
     };
 
     enum class Visibility {
-        show,
-        hide,
-        minimize,
-        maximize
+        Show,
+        Hide,
+        Minimize,
+        Maximize
     };
 
 
@@ -82,8 +82,8 @@ namespace Cedar::Window
         static constexpr const char*  defaultTitle      = "";
         static constexpr Point2D<int> defaultPosition   = { std::numeric_limits<int>::min(), std::numeric_limits<int>::min() };
         static constexpr Size2D<int>  defaultSize       = { -1, -1 };
-        static constexpr Mode         defaultMode       = Mode::windowed;
-        static constexpr Visibility   defaultVisibility = Visibility::show;
+        static constexpr Mode         defaultMode       = Mode::Windowed;
+        static constexpr Visibility   defaultVisibility = Visibility::Show;
 
 
         inline OpenArgs& title(std::string_view windowTitle = defaultTitle);
