@@ -86,46 +86,46 @@ namespace Cedar::Window
         static constexpr Visibility   defaultVisibility = Visibility::show;
 
 
-        OpenArgs& title(std::string_view title = defaultTitle);
+        inline OpenArgs& title(std::string_view windowTitle = defaultTitle);
 
-        OpenArgs& position(Point2D<int> position = defaultPosition);
+        OpenArgs& position(Point2D<int> windowPosition = defaultPosition);
 
-        OpenArgs& position(int x, int y);
+        inline OpenArgs& position(int x, int y);
 
-        OpenArgs& size(Size2D<int> size = defaultSize);
+        OpenArgs& size(Size2D<int> windowSize = defaultSize);
 
-        OpenArgs& size(int width, int height);
+        inline OpenArgs& size(int width, int height);
 
-        OpenArgs& sizeLimits(SizeLimits sizeLimits = { defaultSize, defaultSize });
+        OpenArgs& sizeLimits(SizeLimits windowSizeLimits = { defaultSize, defaultSize });
 
-        OpenArgs& sizeLimits(Size2D<int> minSize, Size2D<int> maxSize);
+        inline OpenArgs& sizeLimits(Size2D<int> minSize, Size2D<int> maxSize);
 
-        OpenArgs& sizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight);
+        inline OpenArgs& sizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight);
 
-        OpenArgs& minSize(Size2D<int> minSize = defaultSize);
+        OpenArgs& minSize(Size2D<int> windowMinSize = defaultSize);
 
-        OpenArgs& minSize(int minWidth, int minHeight);
+        inline OpenArgs& minSize(int minWidth, int minHeight);
 
-        OpenArgs& maxSize(Size2D<int> maxSize = defaultSize);
+        OpenArgs& maxSize(Size2D<int> windowMaxSize = defaultSize);
 
-        OpenArgs& maxSize(int maxWidth, int maxHeight);
+        inline OpenArgs& maxSize(int maxWidth, int maxHeight);
 
-        OpenArgs& mode(Mode mode = defaultMode);
+        inline OpenArgs& mode(Mode windowMode = defaultMode);
 
-        OpenArgs& visibility(Visibility visibility = defaultVisibility);
+        inline OpenArgs& visibility(Visibility windowVisibility = defaultVisibility);
 
 
-        std::string getTitle() const;
+        inline std::string getTitle() const;
 
-        Point2D<int> getPosition() const;
+        inline Point2D<int> getPosition() const;
 
-        Size2D<int> getSize() const;
+        inline Size2D<int> getSize() const;
 
-        SizeLimits getSizeLimits() const;
+        inline SizeLimits getSizeLimits() const;
 
-        Mode getMode() const;
+        inline Mode getMode() const;
 
-        Visibility getVisibility() const;
+        inline Visibility getVisibility() const;
 
     private:
 
@@ -211,6 +211,65 @@ namespace Cedar::Window
     void setMode(Mode mode);
 
     void setVisibility(Visibility visibility);
+
+
+
+    // vvv OpenArgs function definitions vvv
+
+    inline OpenArgs& OpenArgs::title(std::string_view windowTitle) {
+        m_title = windowTitle;
+        return *this;
+    }
+
+
+
+    inline OpenArgs& OpenArgs::position(int x, int y) {
+        return position({ x, y });
+    }
+
+
+
+    inline OpenArgs& OpenArgs::size(int width, int height) {
+        return size({ width, height });
+    }
+
+
+
+    inline OpenArgs& OpenArgs::sizeLimits(Size2D<int> minSize, Size2D<int> maxSize) {
+        return sizeLimits({ minSize, maxSize });
+    }
+
+    inline OpenArgs& OpenArgs::sizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight) {
+        return sizeLimits({ minWidth, minHeight, maxWidth, maxHeight });
+    }
+
+
+
+    inline OpenArgs& OpenArgs::minSize(int minWidth, int minHeight) {
+        return minSize({ minWidth, minHeight });
+    }
+
+
+
+    inline OpenArgs& OpenArgs::maxSize(int maxWidth, int maxHeight) {
+        return maxSize({ maxWidth, maxHeight });
+    }
+
+
+
+    inline OpenArgs& OpenArgs::mode(Mode windowMode) {
+        m_mode = windowMode;
+        return *this;
+    }
+
+
+
+    inline OpenArgs& OpenArgs::visibility(Visibility windowVisibility) {
+        m_visibility = windowVisibility;
+        return *this;
+    }
+
+    // ^^^ OepnArgs function definitions ^^^
 }
 
 #endif // CEDAR_WINDOW_H
