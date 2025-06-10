@@ -198,7 +198,7 @@ namespace Cedar::Window
 
     void setSizeLimits(Size2D<int> minSize, Size2D<int> maxSize);
 
-    void setSizeLimits(int minwidth, int minHeight, int maxWidth, int maxHeight);
+    void setSizeLimits(int minWidth, int minHeight, int maxWidth, int maxHeight);
 
     void setMinSize(Size2D<int> minSize);
 
@@ -269,7 +269,43 @@ namespace Cedar::Window
         return *this;
     }
 
-    // ^^^ OepnArgs function definitions ^^^
+
+
+    inline std::string OpenArgs::getTitle() const {
+        return m_title;
+    }
+
+
+
+    inline Point2D<int> OpenArgs::getPosition() const {
+        return m_position;
+    }
+
+
+
+    inline Size2D<int> OpenArgs::getSize() const {
+        return m_size;
+    }
+
+
+
+    inline SizeLimits OpenArgs::getSizeLimits() const {
+        return m_sizeLimits;
+    }
+
+
+
+    inline Mode OpenArgs::getMode() const {
+        return m_mode;
+    }
+
+
+
+    inline Visibility OpenArgs::getVisibility() const {
+        return m_visibility;
+    }
+
+    // ^^^ OpenArgs function definitions ^^^
 }
 
 #endif // CEDAR_WINDOW_H

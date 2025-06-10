@@ -75,11 +75,11 @@ int commonMain(int argc, char* argv[])
         Cedar::Window::setResizedCallback(windowResizedCallback);
         Cedar::Window::setKeyPressedCallback(keyPressedCallback);
 
-        while (Cedar::Window::isOpen())
-        {
-            Cedar::Log::trace("Polling events");
-            Cedar::Window::pollEvents();
-        }
+        //while (Cedar::Window::isOpen())
+        //{
+        //    Cedar::Log::trace("Polling events");
+        //    Cedar::Window::pollEvents();
+        //}
 
         Cedar::Log::trace("Program terminating");
     }
