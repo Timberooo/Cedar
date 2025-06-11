@@ -173,7 +173,10 @@ namespace Cedar::Window
         if (windowSize.width < 0 || windowSize.height < 0)
             m_size = defaultSize;
         else
+        {
+            Cedar::Log::warning("Window size exceeded the size limits and was clamped");
             m_size = clampSizeBetweenLimits(windowSize, m_sizeLimits);
+        }
 
         return *this;
     }
@@ -184,7 +187,7 @@ namespace Cedar::Window
     {
 
         if (limitsOverlap(windowSizeLimits.minSize, windowSizeLimits.maxSize))
-            throw std::logic_error("The window size limits overlap");
+            throw std::logic_error("Window size limits overlap");
 
         m_sizeLimits = windowSizeLimits;
 
@@ -200,7 +203,7 @@ namespace Cedar::Window
     OpenArgs& OpenArgs::minSize(Size2D<int> windowMinSize)
     {
         if (limitsOverlap(windowMinSize, getSizeLimits().maxSize))
-            throw std::logic_error("The minimum window size exceeded the maximum window size");
+            throw std::logic_error("Minimum window size exceeded the maximum window size");
 
         m_sizeLimits.minSize = windowMinSize;
 
@@ -216,7 +219,7 @@ namespace Cedar::Window
     OpenArgs& OpenArgs::maxSize(Size2D<int> windowMaxSize)
     {
         if (limitsOverlap(getSizeLimits().minSize, windowMaxSize))
-            throw std::logic_error("The maximum window size exceeded the minimum window size");
+            throw std::logic_error("Maximum window size exceeded the minimum window size");
 
         m_sizeLimits.maxSize = windowMaxSize;
 
