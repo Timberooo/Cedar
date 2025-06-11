@@ -138,17 +138,19 @@ namespace
 
     Cedar::Size2D<int> clampSizeBetweenLimits(Cedar::Size2D<int> size, Cedar::Window::SizeLimits sizeLimits)
     {
-        Cedar::Size2D<int> result;
-        int min;
-        int max;
+        Cedar::Size2D<int> result = size;
 
-        min = (isLimitSet(sizeLimits.minSize.width) ? sizeLimits.minSize.width : size.width);
-        max = (isLimitSet(sizeLimits.maxSize.width) ? sizeLimits.maxSize.width : size.width);
-        result.width = std::clamp(size.width, min, max);
+        // Clamp width
+        if (isLimitSet(sizeLimits.minSize.width))
+            result.width = std::max(result.width, sizeLimits.minSize.width);
+        if (isLimitSet(sizeLimits.maxSize.width))
+            result.width = std::min(result.width, sizeLimits.maxSize.width);
 
-        min = (isLimitSet(sizeLimits.minSize.height) ? sizeLimits.minSize.height : size.height);
-        max = (isLimitSet(sizeLimits.maxSize.height) ? sizeLimits.maxSize.height : size.height);
-        result.height = std::clamp(size.height, min, max);
+        // Clamp height
+        if (isLimitSet(sizeLimits.minSize.height))
+            result.height = std::max(result.height, sizeLimits.minSize.height);
+        if (isLimitSet(sizeLimits.maxSize.height))
+            result.height = std::min(result.height, sizeLimits.maxSize.height);
 
         return result;
     }

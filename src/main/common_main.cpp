@@ -68,7 +68,7 @@ int commonMain(int argc, char* argv[])
 
         exitStatus = EXIT_SUCCESS;
 
-        Cedar::Window::open(Cedar::Window::OpenArgs().sizeLimits(0, 0, 0, 0));
+        Cedar::Window::open(Cedar::Window::OpenArgs().sizeLimits(200, 200, -1, -1).size(0, 0));
         
         //Cedar::Window::setClosingCallback(windowClosingCallback);
         //Cedar::Window::setClosedCallback(windowClosedCallback);
