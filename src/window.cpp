@@ -146,7 +146,9 @@ namespace
         max = (isLimitSet(sizeLimits.maxSize.width) ? sizeLimits.maxSize.width : size.width);
         result.width = std::clamp(size.width, min, max);
 
-        // TODO: Height.
+        min = (isLimitSet(sizeLimits.minSize.height) ? sizeLimits.minSize.height : size.height);
+        max = (isLimitSet(sizeLimits.maxSize.height) ? sizeLimits.maxSize.height : size.height);
+        result.height = std::clamp(size.height, min, max);
 
         return result;
     }
