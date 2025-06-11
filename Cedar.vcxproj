@@ -22,6 +22,7 @@
     <ClInclude Include="src\callback.h" />
     <ClInclude Include="src\core.h" />
     <ClInclude Include="src\input.h" />
+    <ClInclude Include="src\io.h" />
     <ClInclude Include="src\io\log.h" />
     <ClInclude Include="src\io\terminal.h" />
     <ClInclude Include="src\main\common_main.h" />
