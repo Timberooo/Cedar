@@ -112,8 +112,6 @@ namespace
 
     bool limitsOverlap(Cedar::Size2D<int> minSize, Cedar::Size2D<int> maxSize);
 
-    Cedar::Size2D<int> clampSizeBetweenLimits(Cedar::Size2D<int> size, Cedar::Size2D<int> minSize, Cedar::Size2D<int> maxSize);
-
     inline Cedar::Size2D<int> clampSizeBetweenLimits(Cedar::Size2D<int> size, Cedar::Window::SizeLimits sizeLimits);
 
 
@@ -138,25 +136,19 @@ namespace
 
 
 
-    Cedar::Size2D<int> clampSizeBetweenLimits(Cedar::Size2D<int> size, Cedar::Size2D<int> minSize, Cedar::Size2D<int> maxSize)
+    Cedar::Size2D<int> clampSizeBetweenLimits(Cedar::Size2D<int> size, Cedar::Window::SizeLimits sizeLimits)
     {
         Cedar::Size2D<int> result;
         int min;
         int max;
 
-        min = (isLimitSet(minSize.width) ? minSize.width : size.width);
-        max = (isLimitSet(maxSize.width) ? maxSize.width : size.width);
+        min = (isLimitSet(sizeLimits.minSize.width) ? sizeLimits.minSize.width : size.width);
+        max = (isLimitSet(sizeLimits.maxSize.width) ? sizeLimits.maxSize.width : size.width);
         result.width = std::clamp(size.width, min, max);
 
-        min = (isLimitSet(minSize.height) ? minSize.height : size.height);
-        max = (isLimitSet(maxSize.height) ? maxSize.height : size.height);
-        result.height = std::clamp(size.height, min, max);
+        // TODO: Height.
 
         return result;
-    }
-
-    inline Cedar::Size2D<int> clampSizeBetweenLimits(Cedar::Size2D<int> size, Cedar::Window::SizeLimits sizeLimits) {
-        return clampSizeBetweenLimits(size, sizeLimits.minSize, sizeLimits.maxSize);
     }
 }
 
