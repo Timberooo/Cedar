@@ -178,8 +178,8 @@ namespace Cedar::Window
             m_size = defaultSize;
         else
         {
-            Cedar::Log::warning("Window size exceeded the size limits and was clamped");
             m_size = clampSizeBetweenLimits(windowSize, m_sizeLimits);
+            Cedar::Log::warning("Window size exceeded the size limits and was clamped");
         }
 
         return *this;
