@@ -55,7 +55,7 @@ namespace
         ATOM windowClass = 0;
 
         Cedar::Window::SizeLimits sizeLimits = { { -1, -1 }, { -1, -1 } };
-        WindowStyles              styles;
+        WindowStyles              styles     = { 0, 0 };
 
 
         inline WindowData() {}
