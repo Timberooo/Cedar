@@ -41,9 +41,9 @@ namespace Cedar
         bool tryCall(T& returnVal, TArgs... args);
 
 
-        inline Function get() const;
+        inline Function getFunction() const;
 
-        inline void set(Function function);
+        inline void setFunction(Function function);
 
     private:
 
@@ -97,14 +97,14 @@ namespace Cedar
 
 
     template <typename TReturn, typename... TArgs>
-    inline Callback<TReturn (*)(TArgs...)>::Function Callback<TReturn (*)(TArgs...)>::get() const {
+    inline Callback<TReturn (*)(TArgs...)>::Function Callback<TReturn (*)(TArgs...)>::getFunction() const {
         return m_function;
     }
 
 
 
     template <typename TReturn, typename... TArgs>
-    inline void Callback<TReturn (*)(TArgs...)>::set(Function function) {
+    inline void Callback<TReturn (*)(TArgs...)>::setFunction(Function function) {
         m_function = function;
     }
 }
