@@ -43,11 +43,6 @@ namespace Cedar
         template <typename T = TReturn, typename = typename std::enable_if<!returnsVoid, T>::type>
         bool tryCall(T& returnVal, TArgs... args);
 
-
-        inline Function getFunction() const;
-
-        inline void setFunction(Function function);
-
     private:
 
         Function m_function = nullptr;
@@ -57,7 +52,7 @@ namespace Cedar
 
     template <typename TReturn, typename... TArgs>
     inline Callback<TReturn(*)(TArgs...)>::operator Function() const {
-        return getFunction();
+        return m_function;
     }
 
 
@@ -102,20 +97,6 @@ namespace Cedar
             returnVal = m_function(args...);
         
         return called;
-    }
-
-
-
-    template <typename TReturn, typename... TArgs>
-    inline Callback<TReturn (*)(TArgs...)>::Function Callback<TReturn (*)(TArgs...)>::getFunction() const {
-        return m_function;
-    }
-
-
-
-    template <typename TReturn, typename... TArgs>
-    inline void Callback<TReturn (*)(TArgs...)>::setFunction(Function function) {
-        m_function = function;
     }
 }
 
