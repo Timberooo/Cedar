@@ -33,13 +33,6 @@ void windowResizedCallback()
 
 
 
-void keyPressedCallback(Cedar::Key key)
-{
-    Cedar::Log::trace("Key pressed: " + std::to_string((int)key));
-}
-
-
-
 void visibilityChangedCallback()
 {
     Cedar::Log::trace("Visibility changed");
@@ -68,18 +61,17 @@ int commonMain(int argc, char* argv[])
 
         exitStatus = EXIT_SUCCESS;
 
-        Cedar::Window::open(Cedar::Window::OpenArgs().sizeLimits(200, 200, -1, -1).size(0, 0));
+        Cedar::Window::open(Cedar::Window::OpenArgs().sizeLimits(200, 200, -1, -1).title("Cedar Engine"));
         
-        //Cedar::Window::setClosingCallback(windowClosingCallback);
-        //Cedar::Window::setClosedCallback(windowClosedCallback);
-        //Cedar::Window::setResizedCallback(windowResizedCallback);
-        //Cedar::Window::setKeyPressedCallback(keyPressedCallback);
+        Cedar::Window::setClosingCallback(windowClosingCallback);
+        Cedar::Window::setClosedCallback(windowClosedCallback);
+        Cedar::Window::setResizedCallback(windowResizedCallback);
 
-        //while (Cedar::Window::isOpen())
-        //{
-        //    Cedar::Log::trace("Polling events");
-        //    Cedar::Window::pollEvents();
-        //}
+        while (Cedar::Window::isOpen())
+        {
+            //Cedar::Log::trace("Polling events");
+            Cedar::Window::pollEvents();
+        }
 
         Cedar::Log::trace("Program terminating");
     }
