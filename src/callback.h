@@ -23,6 +23,11 @@ namespace Cedar
         static constexpr bool returnsVoid = std::is_same<TReturn, void>::value;
 
 
+        inline Callback() {}
+
+        inline Callback(Function function) : m_function(function) {}
+
+
         inline bool canCall() const;
 
 
