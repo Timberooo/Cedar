@@ -5,6 +5,7 @@
 #ifndef CEDAR_WINDOW_H
 #define CEDAR_WINDOW_H
 
+#include "callback.h"
 #include "input.h"
 #include "math.h"
 
@@ -149,26 +150,26 @@ namespace Cedar::Window
     void pollEvents();
 
 
-    ClosedFunc getClosedCallback();
+    Callback<ClosedFunc> getClosedCallback();
 
-    ClosingFunc getClosingCallback();
+    Callback<ClosingFunc> getClosingCallback();
 
-    KeyPressedFunc getKeyPressedCallback();
+    Callback<KeyPressedFunc> getKeyPressedCallback();
 
-    ResizedFunc getResizedCallback();
+    Callback<ResizedFunc> getResizedCallback();
 
-    VisibilityChangedFunc getVisibilityChangedCallback();
+    Callback<VisibilityChangedFunc> getVisibilityChangedCallback();
 
 
-    void setClosedCallback(ClosedFunc closedCallback);
+    void setClosedCallback(Callback<ClosedFunc> closedCallback);
 
-    void setClosingCallback(ClosingFunc closingCallback);
+    void setClosingCallback(Callback<ClosingFunc> closingCallback);
 
-    void setKeyPressedCallback(KeyPressedFunc keyPressedCallback);
+    void setKeyPressedCallback(Callback<KeyPressedFunc> keyPressedCallback);
 
-    void setResizedCallback(ResizedFunc resizedCallback);
+    void setResizedCallback(Callback<ResizedFunc> resizedCallback);
 
-    void setVisibilityChangedCallback(VisibilityChangedFunc visibilityChangedCallback);
+    void setVisibilityChangedCallback(Callback<VisibilityChangedFunc> visibilityChangedCallback);
 
 
     std::string getTitle();

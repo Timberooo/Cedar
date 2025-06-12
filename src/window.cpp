@@ -550,72 +550,72 @@ namespace Cedar::Window
 
 
 
-    ClosedFunc getClosedCallback()
+    Callback<ClosedFunc> getClosedCallback()
     {
-        return g_windowData.callback.closed.get();
+        return g_windowData.callback.closed;
     }
 
 
 
-    ClosingFunc getClosingCallback()
+    Callback<ClosingFunc> getClosingCallback()
     {
-        return g_windowData.callback.closing.get();
+        return g_windowData.callback.closing;
     }
 
 
 
-    KeyPressedFunc getKeyPressedCallback()
+    Callback<KeyPressedFunc> getKeyPressedCallback()
     {
-        return g_windowData.callback.keyPressed.get();
+        return g_windowData.callback.keyPressed;
     }
 
 
 
-    ResizedFunc getResizedCallback()
+    Callback<ResizedFunc> getResizedCallback()
     {
-        return g_windowData.callback.resized.get();
+        return g_windowData.callback.resized;
     }
 
 
 
-    VisibilityChangedFunc getVisibilityChangedCallback()
+    Callback<VisibilityChangedFunc> getVisibilityChangedCallback()
     {
-        g_windowData.callback.visibilityChanged.get();
+        return g_windowData.callback.visibilityChanged;
     }
 
 
 
-    void setClosedCallback(ClosedFunc closedCallback)
+    void setClosedCallback(Callback<ClosedFunc> closedCallback)
     {
-        g_windowData.callback.closed.set(closedCallback);
+        g_windowData.callback.closed = closedCallback;
     }
 
 
 
-    void setClosingCallback(ClosingFunc closingCallback)
+    void setClosingCallback(Callback<ClosingFunc> closingCallback)
     {
-        g_windowData.callback.closing.set(closingCallback);
+        g_windowData.callback.closing = closingCallback;
     }
 
 
 
-    void setKeyPressedCallback(KeyPressedFunc keyPressedCallback)
+    void setKeyPressedCallback(Callback<KeyPressedFunc> keyPressedCallback)
     {
-        g_windowData.callback.keyPressed.set(keyPressedCallback);
+        g_windowData.callback.keyPressed = keyPressedCallback;
     }
 
 
 
-    void setResizedCallback(ResizedFunc resizedCallback)
+    void setResizedCallback(Callback<ResizedFunc> resizedCallback)
     {
-        g_windowData.callback.resized.set(resizedCallback);
+        g_windowData.callback.resized = resizedCallback;
     }
 
 
 
-    void setVisibilityChangedCallback(VisibilityChangedFunc visibilityChangedCallback)
+    void setVisibilityChangedCallback(Callback<VisibilityChangedFunc> visibilityChangedCallback)
     {
-        g_windowData.callback.visibilityChanged.set(visibilityChangedCallback);
+        g_windowData.callback.visibilityChanged = visibilityChangedCallback;
     }
 }
 
