@@ -550,6 +550,41 @@ namespace Cedar::Window
 
 
 
+    ClosedFunc getClosedCallback()
+    {
+        return g_windowData.callback.closed.get();
+    }
+
+
+
+    ClosingFunc getClosingCallback()
+    {
+        return g_windowData.callback.closing.get();
+    }
+
+
+
+    KeyPressedFunc getKeyPressedCallback()
+    {
+        return g_windowData.callback.keyPressed.get();
+    }
+
+
+
+    ResizedFunc getResizedCallback()
+    {
+        return g_windowData.callback.resized.get();
+    }
+
+
+
+    VisibilityChangedFunc getVisibilityChangedCallback()
+    {
+        g_windowData.callback.visibilityChanged.get();
+    }
+
+
+
     void setClosedCallback(ClosedFunc closedCallback)
     {
         g_windowData.callback.closed.set(closedCallback);
@@ -564,9 +599,23 @@ namespace Cedar::Window
 
 
 
+    void setKeyPressedCallback(KeyPressedFunc keyPressedCallback)
+    {
+        g_windowData.callback.keyPressed.set(keyPressedCallback);
+    }
+
+
+
     void setResizedCallback(ResizedFunc resizedCallback)
     {
         g_windowData.callback.resized.set(resizedCallback);
+    }
+
+
+
+    void setVisibilityChangedCallback(VisibilityChangedFunc visibilityChangedCallback)
+    {
+        g_windowData.callback.visibilityChanged.set(visibilityChangedCallback);
     }
 }
 
