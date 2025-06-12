@@ -28,6 +28,9 @@ namespace Cedar
         inline Callback(Function function) : m_function(function) {}
 
 
+        inline operator Function() const;
+
+
         inline bool canCall() const;
 
 
@@ -49,6 +52,13 @@ namespace Cedar
 
         Function m_function = nullptr;
     };
+
+
+
+    template <typename TReturn, typename... TArgs>
+    inline Callback<TReturn(*)(TArgs...)>::operator Function() const {
+        return getFunction();
+    }
 
 
 
