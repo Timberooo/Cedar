@@ -259,6 +259,7 @@ namespace Cedar::Window
 
 #include "platform/windows.h"
 
+#include <stdexcept>
 #include <system_error>
 
 
@@ -267,6 +268,8 @@ namespace
 {
     constexpr LPCWSTR windowClassName = L"CedarEngine";
 
+    const std::logic_error nullWindowException = std::logic_error("Window is not open");
+
 
 
     void registerWindowClass();
@@ -274,10 +277,6 @@ namespace
     WindowStyles getWindowStyles();
 
     Cedar::Size2D<int> clientSizeToWindowSize(Cedar::Size2D<int> clientSize, WindowStyles styles, UINT dpi);
-
-    int visibilityToCmdShow(Cedar::Window::Visibility vis);
-
-    Cedar::Window::Visibility cmdShowToVisibility(int cmdShow);
 
 
 
@@ -344,38 +343,6 @@ namespace
         AdjustWindowRectExForDpi(&rect, styles.style, FALSE, styles.exStyle, dpi);
 
         return { rect.right - rect.left, rect.bottom - rect.top };
-    }
-
-
-
-    int visibilityToCmdShow(Cedar::Window::Visibility vis)
-    {
-        switch (vis) {
-            case Cedar::Window::Visibility::Show:
-                return SW_SHOW;
-            case Cedar::Window::Visibility::Hide:
-                return SW_HIDE;
-            case Cedar::Window::Visibility::Maximize:
-                return SW_MAXIMIZE;
-            default: // Cedar::Window::Visibility::Minimize
-                return SW_MINIMIZE;
-        }
-    }
-
-
-
-    Cedar::Window::Visibility cmdShowToVisibility(int cmdShow)
-    {
-        switch (cmdShow) {
-            case SW_SHOW:
-                return Cedar::Window::Visibility::Show;
-            case SW_HIDE:
-                return Cedar::Window::Visibility::Hide;
-            case SW_MAXIMIZE:
-                return Cedar::Window::Visibility::Maximize;
-            default: // SW_MINIMIZE
-                return Cedar::Window::Visibility::Minimize;
-        }
     }
 
 
@@ -519,7 +486,7 @@ namespace Cedar::Window
         g_windowData.sizeLimits = openArgs.getSizeLimits();
         g_windowData.styles     = styles;
 
-        ShowWindow(g_windowData.hWnd, visibilityToCmdShow(openArgs.getVisibility()));
+        setVisibility(openArgs.getVisibility());
     }
 
 
@@ -624,42 +591,110 @@ namespace Cedar::Window
 
     std::string getTitle()
     {
-        // TODO: Implement this function.
+        if (!isOpen())
+            throw nullWindowException;
+
+        // + 1 to account for null terminator
+        int titleLength = GetWindowTextLengthW(g_windowData.hWnd) + 1;
+
+        std::wstring title(titleLength, L'\0');
+        (void)GetWindowTextW(g_windowData.hWnd, title.data(), titleLength);
+
+        return Platform::Windows::wideStringToString(title);
     }
 
 
 
     Point2D<int> getPosition()
     {
-        // TODO: Implement this function.
+        if (!isOpen())
+            throw nullWindowException;
+
+        RECT rect;
+        GetWindowRect(g_windowData.hWnd, &rect);
+
+        return { rect.left, rect.top };
     }
 
 
 
     Size2D<int> getSize()
     {
-        // TODO: Implement this function.
+        if (!isOpen())
+            throw nullWindowException;
+
+        RECT rect;
+        GetClientRect(g_windowData.hWnd, &rect);
+
+        return { rect.right, rect.bottom };
     }
 
 
 
     SizeLimits getSizeLimits()
     {
-        // TODO: Implement this function.
+        if (!isOpen())
+            throw nullWindowException;
+
+        return g_windowData.sizeLimits;
     }
 
 
 
     Mode getMode()
     {
-        // TODO: Implement this function.
+        if (!isOpen())
+            throw nullWindowException;
+
+        // TODO: Properly implement this function once fullscreen and fullscreen
+        //       borderless are supported.
+        return Mode::Windowed;
     }
 
 
 
     Visibility getVisibility()
     {
-        // TODO: Implement this function.
+        if (!isOpen())
+            throw nullWindowException;
+
+        LONG_PTR style = GetWindowLongPtrW(g_windowData.hWnd, GWL_STYLE);
+
+        if ((WS_MAXIMIZE & style) != 0)
+            return Visibility::Maximize;
+        else if ((WS_MINIMIZE & style) != 0)
+            return Visibility::Minimize;
+        else if ((WS_VISIBLE & style) != 0)
+            return Visibility::Show;
+        else
+            return Visibility::Hide;
+    }
+
+
+
+    void setVisibility(Visibility visibility)
+    {
+        // TODO: Investigate graphical bugs when visibility == Minimize.
+
+        if (!isOpen())
+            throw nullWindowException;
+
+        int cmdShow;
+
+        switch (visibility) {
+            case Visibility::Show:
+                cmdShow = SW_SHOW; break;
+            case Visibility::Hide:
+                cmdShow = SW_HIDE; break;
+            case Visibility::Minimize:
+                cmdShow = SW_MINIMIZE; break;
+            case Visibility::Maximize:
+                cmdShow = SW_MAXIMIZE; break;
+            default:
+                break;
+        }
+
+        (void)ShowWindow(g_windowData.hWnd, cmdShow);
     }
 }
 

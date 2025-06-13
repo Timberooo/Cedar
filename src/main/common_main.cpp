@@ -66,11 +66,12 @@ int commonMain(int argc, char* argv[])
         Cedar::Window::setResizedCallback(windowResizedCallback);
         Cedar::Window::setVisibilityChangedCallback(visibilityChangedCallback);
 
-        Cedar::Window::open(Cedar::Window::OpenArgs().sizeLimits(200, 200, -1, -1).title("Cedar Engine"));
+        Cedar::Window::open(Cedar::Window::OpenArgs().sizeLimits(200, 200, -1, -1).title("Cedar Engine").visibility(Cedar::Window::Visibility::Maximize));
 
         while (Cedar::Window::isOpen())
         {
             //Cedar::Log::trace("Polling events");
+            Cedar::Window::getVisibility();
             Cedar::Window::pollEvents();
         }
 
