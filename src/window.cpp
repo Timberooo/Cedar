@@ -46,9 +46,9 @@ namespace
         {
             Cedar::Callback<Cedar::Window::ClosedFunc>            closed;
             Cedar::Callback<Cedar::Window::ClosingFunc>           closing;
-            Cedar::Callback<Cedar::Window::KeyPressedFunc>        keyPressed;
+            Cedar::Callback<Cedar::Window::KeyPressedFunc>        keyPressed; // TODO: Call this.
             Cedar::Callback<Cedar::Window::ResizedFunc>           resized;
-            Cedar::Callback<Cedar::Window::VisibilityChangedFunc> visibilityChanged;
+            Cedar::Callback<Cedar::Window::VisibilityChangedFunc> visibilityChanged; // TODO: Call this.
         } callback;
 
         HWND hWnd        = NULL;
@@ -500,6 +500,8 @@ namespace Cedar::Window
         else
             size = clientSizeToWindowSize(openArgs.getSize(), styles, USER_DEFAULT_SCREEN_DPI);
 
+        // TODO: Log warning for long window names.
+
         g_windowData.hWnd = CreateWindowExW(styles.exStyle,
                                             MAKEINTATOM(g_windowData.windowClass),
                                             Platform::Windows::stringToWideString(openArgs.getTitle()).c_str(),
@@ -524,7 +526,7 @@ namespace Cedar::Window
 
     void close()
     {
-        PostMessage(g_windowData.hWnd, WM_CLOSE, 0, 0);
+        PostMessageW(g_windowData.hWnd, WM_CLOSE, 0, 0);
     }
 
 
@@ -616,6 +618,48 @@ namespace Cedar::Window
     void setVisibilityChangedCallback(Callback<VisibilityChangedFunc> visibilityChangedCallback)
     {
         g_windowData.callback.visibilityChanged = visibilityChangedCallback;
+    }
+
+
+
+    std::string getTitle()
+    {
+        // TODO: Implement this function.
+    }
+
+
+
+    Point2D<int> getPosition()
+    {
+        // TODO: Implement this function.
+    }
+
+
+
+    Size2D<int> getSize()
+    {
+        // TODO: Implement this function.
+    }
+
+
+
+    SizeLimits getSizeLimits()
+    {
+        // TODO: Implement this function.
+    }
+
+
+
+    Mode getMode()
+    {
+        // TODO: Implement this function.
+    }
+
+
+
+    Visibility getVisibility()
+    {
+        // TODO: Implement this function.
     }
 }
 
