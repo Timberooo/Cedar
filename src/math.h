@@ -1,14 +1,12 @@
 //
-// A collection of the header files located in the "math" directory.
+// A collection of header files located in the "math" directory.
 //
 
 #ifndef CEDAR_MATH_H
 #define CEDAR_MATH_H
 
-#include "math/array2d.h"
 #include "math/math_common.h"
 #include "math/point.h"
-#include "math/rectangle.h"
 #include "math/size.h"
 #include "math/vector.h"
 

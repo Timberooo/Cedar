@@ -1,5 +1,7 @@
 #include "windows_common.h"
 
+#include "../../io/log.h"
+
 #include <string>
 #include <string_view>
 #include <system_error>
@@ -24,22 +26,21 @@ namespace
             return true;
         }
 
-        int strLength  = str.length();
-        int wstrLength = MultiByteToWideChar(CP_UTF8, 0, str.data(), strLength, NULL, 0);
+        int wstrLength = MultiByteToWideChar(CP_UTF8, 0, str.data(), str.length(), NULL, 0);
 
         if (wstrLength == 0)
             return false;
 
         wstr.resize(wstrLength);
 
-        return MultiByteToWideChar(CP_UTF8, 0, str.data(), strLength, wstr.data(), wstrLength) != 0;
+        return (MultiByteToWideChar(CP_UTF8, 0, str.data(), str.length(), wstr.data(), wstrLength) != 0);
     }
 
 
 
     bool convertWideStringToString(std::wstring_view wstr, std::string& str)
     {
-        // NOTE: WideCharToMultiByte fails if the length of wstr is 0, but it should be
+        // NOTE: WideCharToMultiByte fails of the length of wstr is 0, but it should be
         //       considered a success instead.
         if (wstr.length() == 0)
         {
@@ -47,15 +48,14 @@ namespace
             return true;
         }
 
-        int wstrLength = wstr.length();
-        int strLength = WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstrLength, NULL, 0, NULL, NULL);
+        int strLength = WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstr.length(), NULL, 0, NULL, NULL);
 
         if (strLength == 0)
             return false;
 
         str.resize(strLength);
 
-        return WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstrLength, str.data(), strLength, NULL, NULL) != 0;
+        return (WideCharToMultiByte(CP_UTF8, 0, wstr.data(), wstr.length(), str.data(), strLength, NULL, NULL) != 0);
     }
 }
 
@@ -63,10 +63,14 @@ namespace
 
 namespace Cedar::Platform::Windows
 {
-    bool tryStringToWideString(std::string_view str, std::wstring wstr)
+    bool tryStringToWideString(std::string_view str, std::wstring& wstr)
     {
-        // TODO: Log error before returning if conversion fails.
-        return convertStringToWideString(str, wstr);
+        bool result = convertStringToWideString(str, wstr);
+
+        if (!result)
+            Cedar::Log::error("Failed to convert string to wide string");
+
+        return result;
     }
 
 
@@ -86,8 +90,12 @@ namespace Cedar::Platform::Windows
 
     bool tryWideStringToString(std::wstring_view wstr, std::string& str)
     {
-        // TODO: Log error before returning if conversion fails.
-        return convertWideStringToString(wstr, str);
+        bool result = convertWideStringToString(wstr, str);
+
+        if (result)
+            Cedar::Log::error("Failed to convert wide string to string");
+
+        return result;
     }
 
 

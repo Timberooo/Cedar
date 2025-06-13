@@ -1,23 +1,41 @@
 #include "common_main.h"
 
-#include "../terminal.h"
-#include "../math.h"
-
-#include "../gui/anchor.h"
+#include "../io/log.h"
+#include "../io/terminal.h"
+#include "../window.h"
 
 #include <cstdlib>
 #include <exception>
+
 #include <string>
 
 
 
-namespace
+void windowClosedCallback()
 {
-    void logUnhandledException(const std::string& exceptionMsg);
+    Cedar::Log::trace("Window closed");
+}
 
-    void unicodeByteTest();
 
-    void array2DTest();
+
+bool windowClosingCallback()
+{
+    Cedar::Log::trace("Window closing");
+    return true;
+}
+
+
+
+void windowResizedCallback()
+{
+    Cedar::Log::trace("Window resized");
+}
+
+
+
+void visibilityChangedCallback()
+{
+    Cedar::Log::trace("Visibility changed");
 }
 
 
@@ -28,95 +46,43 @@ int commonMain(int argc, char* argv[])
 
     try
     {
-        Cedar::Terminal::setMode(Cedar::Terminal::Mode::raw);
-        Cedar::Terminal::enableAltScreenBuffer(true);
-        Cedar::Terminal::showCursor(false);
+        Cedar::Terminal::enable(true);
+        Cedar::Log::setMinLevel(Cedar::Log::Level::Trace);
 
-        array2DTest();
-        unicodeByteTest();
+        CEDAR_LOG_TRACE("Entered commonMain");
 
-        Cedar::Terminal::writeLine("Hello world! press 'Q' to quit");
-
-        char input;
-
-        do {
-            input = Cedar::Terminal::getRawInput();
-
-            if (input != '\0')
-                Cedar::Terminal::write(std::to_string(input) + " ");
-        } while (input != 'q' && input != 'Q');
+        CEDAR_LOG_TRACE("trace message");
+        CEDAR_LOG_DEBUG("debug message");
+        CEDAR_LOG_INFO("info message");
+        CEDAR_LOG_WARNING("warning message");
+        CEDAR_LOG_ERROR("error message");
+        CEDAR_LOG_CRITICAL("critical message");
+        CEDAR_LOG_FATAL("fatal message");
 
         exitStatus = EXIT_SUCCESS;
+
+        Cedar::Window::setClosedCallback(windowClosedCallback);
+        Cedar::Window::setClosingCallback(windowClosingCallback);
+        Cedar::Window::setResizedCallback(windowResizedCallback);
+        Cedar::Window::setVisibilityChangedCallback(visibilityChangedCallback);
+
+        Cedar::Window::open(Cedar::Window::OpenArgs().sizeLimits(200, 200, -1, -1).title("Cedar Engine").visibility(Cedar::Window::Visibility::Maximize));
+
+        while (Cedar::Window::isOpen())
+        {
+            //Cedar::Log::trace("Polling events");
+            Cedar::Window::getVisibility();
+            Cedar::Window::pollEvents();
+        }
+
+        Cedar::Log::trace("Program terminating");
     }
-    catch(const std::exception& e) {
-        logUnhandledException(e.what());
+    catch (const std::exception& e) {
+        Cedar::Log::fatal(e.what());
     }
     catch (...) {
-        logUnhandledException("An unknown exception occurred");
+        Cedar::Log::fatal("An unknown exception occurred");
     }
 
     return exitStatus;
-}
-
-
-
-namespace
-{
-    void logUnhandledException(const std::string& exceptionMsg)
-    {
-        Cedar::Terminal::enableAltScreenBuffer(false);
-        Cedar::Terminal::writeLine("Unhandled exception: " + exceptionMsg);
-    }
-
-
-
-    void unicodeByteTest()
-    {
-        const char* unicodeTest = "\u256b";
-
-        Cedar::Terminal::write("Unicode byte test for " + std::string(unicodeTest) + ": ");
-
-        for (std::size_t i = 0; unicodeTest[i] != '\0'; i++)
-            Cedar::Terminal::write(std::to_string(unicodeTest[i]) + " ");
-
-        Cedar::Terminal::write('\n');
-    }
-
-
-
-    void array2DTest()
-    {
-        Cedar::Array2D<Cedar::Color> guiTest(4, 4);
-        int color = 29;
-
-        for (std::size_t y = 0; y < guiTest.size().height; y++)
-        {
-            for (std::size_t x = 0; x < guiTest.size().width; x++)
-            {
-                if (color == 37)
-                    color = 90;
-                else if (color == 97)
-                    color = 30;
-                else
-                    color++;
-
-                guiTest.at(x, y) = (Cedar::Color)color;
-            }
-        }
-
-        guiTest.resize(16, 2, Cedar::Color::bright_blue);
-
-        for (std::size_t y = 0; y < guiTest.size().height; y++)
-        {
-            for (std::size_t x = 0; x < guiTest.size().width; x++)
-            {
-                Cedar::Terminal::setCursorPosition(x, y);
-                Cedar::Terminal::setBackgroundColor(guiTest.at(x, y));
-                Cedar::Terminal::write(' ');
-            }
-        }
-
-        Cedar::Terminal::resetBackgroundColor();
-        Cedar::Terminal::write('\n');
-    }
 }

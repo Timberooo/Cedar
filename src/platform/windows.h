@@ -1,7 +1,7 @@
 //
-// A collection of the header files located in the "platform/windows" directory.
+// A collection of header files located in the "platform/windows" directory.
 //
-// Including this file should be preferred over directly including Windows.h.
+// Including this file should be preferred over directly including Windows.h
 //
 
 #ifndef CEDAR_PLATFORM_WINDOWS_H

@@ -18,6 +18,30 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\callback.h" />
+    <ClInclude Include="src\core.h" />
+    <ClInclude Include="src\input.h" />
+    <ClInclude Include="src\io\log.h" />
+    <ClInclude Include="src\io\terminal.h" />
+    <ClInclude Include="src\main\common_main.h" />
+    <ClInclude Include="src\math.h" />
+    <ClInclude Include="src\math\math_common.h" />
+    <ClInclude Include="src\math\point.h" />
+    <ClInclude Include="src\math\size.h" />
+    <ClInclude Include="src\math\vector.h" />
+    <ClInclude Include="src\platform\windows.h" />
+    <ClInclude Include="src\platform\windows\windows_common.h" />
+    <ClInclude Include="src\window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\io\log.cpp" />
+    <ClCompile Include="src\io\terminal.cpp" />
+    <ClCompile Include="src\main\common_main.cpp" />
+    <ClCompile Include="src\main\windows_main.cpp" />
+    <ClCompile Include="src\platform\windows\windows_common.cpp" />
+    <ClCompile Include="src\window.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -112,12 +136,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8</AdditionalOptions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EntryPointSymbol>wmainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,38 +153,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8</AdditionalOptions>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EntryPointSymbol>wmainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="src\main\common_main.cpp" />
-    <ClCompile Include="src\main\windows_main.cpp" />
-    <ClCompile Include="src\platform\windows\windows_common.cpp" />
-    <ClCompile Include="src\terminal.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\color.h" />
-    <ClInclude Include="src\core.h" />
-    <ClInclude Include="src\gui\anchor.h" />
-    <ClInclude Include="src\main\common_main.h" />
-    <ClInclude Include="src\math.h" />
-    <ClInclude Include="src\math\array2d.h" />
-    <ClInclude Include="src\math\math_common.h" />
-    <ClInclude Include="src\math\point.h" />
-    <ClInclude Include="src\math\rectangle.h" />
-    <ClInclude Include="src\math\size.h" />
-    <ClInclude Include="src\math\vector.h" />
-    <ClInclude Include="src\platform\windows.h" />
-    <ClInclude Include="src\platform\windows\windows_common.h" />
-    <ClInclude Include="src\terminal.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
