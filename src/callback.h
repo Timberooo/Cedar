@@ -23,6 +23,14 @@ namespace Cedar
         static constexpr bool returnsVoid = std::is_same<TReturn, void>::value;
 
 
+        inline Callback() {}
+
+        inline Callback(Function function) : m_function(function) {}
+
+
+        inline operator Function() const;
+
+
         inline bool canCall() const;
 
 
@@ -35,15 +43,17 @@ namespace Cedar
         template <typename T = TReturn, typename = typename std::enable_if<!returnsVoid, T>::type>
         bool tryCall(T& returnVal, TArgs... args);
 
-
-        inline Function get() const;
-
-        inline void set(Function function);
-
     private:
 
         Function m_function = nullptr;
     };
+
+
+
+    template <typename TReturn, typename... TArgs>
+    inline Callback<TReturn(*)(TArgs...)>::operator Function() const {
+        return m_function;
+    }
 
 
 
@@ -87,20 +97,6 @@ namespace Cedar
             returnVal = m_function(args...);
         
         return called;
-    }
-
-
-
-    template <typename TReturn, typename... TArgs>
-    inline Callback<TReturn (*)(TArgs...)>::Function Callback<TReturn (*)(TArgs...)>::get() const {
-        return m_function;
-    }
-
-
-
-    template <typename TReturn, typename... TArgs>
-    inline void Callback<TReturn (*)(TArgs...)>::set(Function function) {
-        m_function = function;
     }
 }
 
