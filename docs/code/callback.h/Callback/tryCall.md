@@ -24,7 +24,7 @@ Attempts to call the callback function. Only exists when `TReturn` is `void`.
 
 #### Returns
 
-A `bool` indicating if the function was called successfully (true) or not (false).
+A `bool` indicating if the function was called successfully or not.
 
 ### bool tryCall(T& returnVal, TArgs... args)
 
@@ -41,13 +41,13 @@ Attempts to call the callback function. Only exists when `TReturn` is not `void`
 
 #### Parameters
 
-`returnVal` - The value returned by the callback function. This value is unchanged if no callback function is set.
+`returnVal` - The value returned by the callback function. This value is unchanged if the callback fails.
 
 `args` - The callback function's arguments.
 
 #### Returns
 
-A `bool` indicating if the function was called successfully (true) or not (false).
+A `bool` indicating if the function was called successfully or not.
 
 ## Class
 
