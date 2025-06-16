@@ -1,4 +1,4 @@
-# Cedar::Callback::tryCall
+# Cedar::Callback<TReturn (*)(TArgs...)>::tryCall
 
 Attempts to call the function associated with the callback.
 
@@ -12,10 +12,11 @@ Attempts to call the function associated with the callback.
 ### bool tryCall(TArgs... args)
 
 ``` c++
+template <typename T = TReturn, typename = typename std::enable_if<returnsVoid, T>::type>
 bool tryCall(TArgs... args);
 ```
 
-Attempts to call the callback function. Only exists for functions that return `void`.
+Attempts to call the callback function. Only exists when `TReturn` is `void`.
 
 #### Parameters
 
@@ -28,10 +29,15 @@ A `bool` indicating if the function was called successfully (true) or not (false
 ### bool tryCall(T& returnVal, TArgs... args)
 
 ``` c++
+template <typename T = TReturn, typename = typename std::enable_if<!returnsVoid, T>::type>
 bool tryCall(T& returnVal, TArgs... args);
 ```
 
-Attempts to call the callback function. Only exists for functions that do not return `void`.
+Attempts to call the callback function. Only exists when `TReturn` is not `void`.
+
+#### Template Parameters
+
+`T` - The same type as `TReturn`.
 
 #### Parameters
 
