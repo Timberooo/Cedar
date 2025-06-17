@@ -27,7 +27,7 @@ Contains a function pointer to use as a callback function.
 
 | Type | Description |
 | --- | --- |
-| [TReturn (*Function)(TArgs...)](Callback/Function.md) | The function pointer type. |
+| [Function](Callback/Function.md) | The function pointer type. |
 
 ### Variables
 
@@ -39,14 +39,14 @@ Contains a function pointer to use as a callback function.
 
 | Constructor | Description |
 | --- | --- |
-| [Callback()]() | Initializes the callback function to `nullptr`. |
-| [Callback(Function function)]() | Initializes the callback function using the given function pointer. |
+| [Callback()](Callback/constructor.md#callback) | Initializes the callback function to `nullptr`. |
+| [Callback(Function function)](Callback/constructor.md#callbackfunction-function) | Initializes the callback function using the given function pointer. |
 
 ### Operators
 
 | Operator | Description |
 | --- | --- |
-| [operator Function() const]() | Returns the value of the callback pointer. |
+| [operator Function() const](Callback/Function.md) | Returns the value of the callback pointer. |
 
 ### Functions
 
@@ -54,8 +54,8 @@ Contains a function pointer to use as a callback function.
 | --- | --- |
 | [TReturn call(TArgs... args)](Callback/call.md) | Calls the callback function. |
 | [bool canCall() const](Callback/canCall.md) | Checks if the callback function can be called. |
-| [bool tryCall(TArgs... args)]() | Attempts to call the callback function. Only available when `TReturn` is `void`. |
-| [bool tryCall(T& returnVal, TArgs... args)]() | Attempts to call the callback function. Only available when `TReturn` is not `void`. |
+| [bool tryCall(TArgs... args)](Callback/tryCall.md#bool-trycalltargs-args) | Attempts to call the callback function. Only available when `TReturn` is `void`. |
+| [bool tryCall(T& returnVal, TArgs... args)](Callback/tryCall.md#bool-trycallt-returnval-targs-args) | Attempts to call the callback function. Only available when `TReturn` is not `void`. |
 
 ## Header
 
