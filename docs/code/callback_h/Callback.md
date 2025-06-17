@@ -15,12 +15,30 @@ class Callback<TReturn (*)(TArgs...)>;
 
 ## Members
 
+### Typedefs
+
+| Typedef | Description |
+| --- | --- |
+| [TReturn (*Function)(TArgs...)](Callback/Function.md) | The function pointer type. |
+
+### Variables
+
+| Variable | Description |
+| --- | --- |
+| [static constexpr bool returnsVoid](Callback/returnsVoid.md) | Indicates whether or not `TReturn` is `void`. |
+
 ### Constructors
 
 | Constructor | Description |
 | --- | --- |
 | [Callback()](/docs/code/callback.h/Callback/constructor.md) | Initializes the callback function to `nullptr`. |
 | [Callback(Function function)](/docs/code/callback.h/Callback/constructor.md) | Initializes the callback function to the given function pointer. |
+
+### Operators
+
+| Operator | Description |
+| --- | --- |
+| [operator Function() const]() | Returns the value of the callback pointer. |
 
 ### Functions
 
