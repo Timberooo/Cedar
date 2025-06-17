@@ -42,7 +42,7 @@ Contains a function pointer to use as a callback function.
 
 | Operator | Access | Description |
 | --- | --- | --- |
-| [operator Function() const]() | Public | Returns the value of the callback pointer. |
+| [operator Function() const](Callback/operator_Function.md) | Public | Returns the value of the callback pointer. |
 
 ### Functions
 
