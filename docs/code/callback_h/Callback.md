@@ -29,12 +29,6 @@ Contains a function pointer to use as a callback function.
 | --- | --- | --- |
 | [Function](Callback/Function.md) | Public | The function pointer type. |
 
-### Variables
-
-| Variable | Access | Description |
-| --- | --- | --- |
-| [static constexpr bool returnsVoid](Callback/returnsVoid.md) | Public | Indicates whether or not `TReturn` is `void`. |
-
 ### Constructors
 
 | Constructor | Access | Description |
@@ -56,6 +50,14 @@ Contains a function pointer to use as a callback function.
 | [bool canCall() const](Callback/canCall.md) | Public | Checks if the callback function can be called. |
 | [bool tryCall(TArgs... args)](Callback/tryCall.md#bool-trycalltargs-args) | Public | Attempts to call the callback function. Only available when `TReturn` is `void`. |
 | [bool tryCall(T& returnVal, TArgs... args)](Callback/tryCall.md#bool-trycallt-returnval-targs-args) | Public | Attempts to call the callback function. Only available when `TReturn` is not `void`. |
+
+## Static Members
+
+### Variables
+
+| Variable | Access | Description |
+| --- | --- | --- |
+| [constexpr bool returnsVoid](Callback/returnsVoid.md) | Public | Indicates whether or not `TReturn` is `void`. |
 
 ## Header
 
