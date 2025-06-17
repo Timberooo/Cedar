@@ -52,6 +52,10 @@ Attempts to call the callback function. Only available when `TReturn` is not `vo
 
 `true` if the callback function was successfully called; otherwise `false`.
 
+## See also
+
+[TReturn call(TArgs... args)](call.md)
+
 ## Class
 
 [Cedar::Callback](../Callback.md)

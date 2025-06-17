@@ -13,6 +13,10 @@ Returns the value of the callback pointer.
 
 The value of the callback function pointer.
 
+## See also
+
+[Function](Function.md)
+
 ## Class
 
 [Cedar::Callback](../Callback.md)
