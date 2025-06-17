@@ -1,5 +1,7 @@
 # Cedar::Callback
 
+**Type:** Class
+
 ``` c++
 template <typename TFunction>
 class Callback;

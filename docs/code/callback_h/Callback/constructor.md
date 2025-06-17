@@ -1,5 +1,8 @@
 # Cedar::Callback<TReturn (*)(TArgs...)>::Callback
 
+**Type:** Constructor\
+**Access:** Public
+
 Initializes the callback function.
 
 ## Overloads

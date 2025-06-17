@@ -1,5 +1,8 @@
 # Cedar::Callback<TReturn (*)(TArgs...)>::canCall
 
+**Type:** Function\
+**Access:** Public
+
 ``` c++
 bool canCall() const;
 ```

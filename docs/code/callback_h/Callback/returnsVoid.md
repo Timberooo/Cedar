@@ -1,5 +1,8 @@
 # Cedar::Callback<TReturn (*)(TArgs...)>::returnsVoid
 
+**Type:** Variable\
+**Access:** Public
+
 ``` c++
 static constexpr bool returnsVoid;
 ```

@@ -1,5 +1,8 @@
 # Cedar::Callback<TReturn (*)(TArgs...)>::tryCall
 
+**Type:** Function\
+**Access:** Public
+
 Attempts to call the callback function.
 
 ## Overloads

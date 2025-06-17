@@ -1,5 +1,8 @@
 # Cedar::Callback<TReturn (*)(TArgs...)>::Function
 
+**Type:** Operator\
+**Access:** Public
+
 ``` c++
 TReturn (*Function)(TArgs...);
 ```
