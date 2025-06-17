@@ -1,13 +1,13 @@
 # Cedar::Callback<TReturn (*)(TArgs...)>::tryCall
 
-Attempts to call the function associated with the callback.
+Attempts to call the callback function.
 
 ## Overloads
 
-| Overloads | Description |
+| Overload | Description |
 | --- | --- |
-| [bool tryCall(TArgs... args)](#bool-trycalltargs-args) | Attempts to call the callback function. Only exists for functions that return `void`. |
-| [bool tryCall(T& returnVal, TArgs... args)](#bool-trycallt-returnval-targs-args) | Attempts to call the callback function. Only exists for functions that do not return `void`. |
+| [bool tryCall(TArgs... args)](#bool-trycalltargs-args) | Attempts to call the callback function. Only available when `TReturn` is `void`. |
+| [bool tryCall(T& returnVal, TArgs... args)](#bool-trycallt-returnval-targs-args) | Attempts to call the callback function. Only available when `TReturn` is not `void`. |
 
 ### bool tryCall(TArgs... args)
 
@@ -16,15 +16,15 @@ template <typename T = TReturn, typename = typename std::enable_if<returnsVoid, 
 bool tryCall(TArgs... args);
 ```
 
-Attempts to call the callback function. Only exists when `TReturn` is `void`.
+Attempts to call the callback function. Only available when `TReturn` is `void`.
 
 #### Parameters
 
-`args` - The callback function's arguments.
+`args` - The arguments to pass to the callback function.
 
 #### Returns
 
-A `bool` indicating if the function was called successfully or not.
+`true` if the callback function was successfully called; otherwise `false`.
 
 ### bool tryCall(T& returnVal, TArgs... args)
 
@@ -33,7 +33,7 @@ template <typename T = TReturn, typename = typename std::enable_if<!returnsVoid,
 bool tryCall(T& returnVal, TArgs... args);
 ```
 
-Attempts to call the callback function. Only exists when `TReturn` is not `void`.
+Attempts to call the callback function. Only available when `TReturn` is not `void`.
 
 #### Template Parameters
 
@@ -41,18 +41,14 @@ Attempts to call the callback function. Only exists when `TReturn` is not `void`
 
 #### Parameters
 
-`returnVal` - The value returned by the callback function. This value is unchanged if the callback fails.
+`returnVal` - The value returned by the callback function. If the callback function is not called this value is unchanged.
 
 `args` - The callback function's arguments.
 
 #### Returns
 
-A `bool` indicating if the function was called successfully or not.
+`true` if the callback function was successfully called; otherwise `false`.
 
 ## Class
 
-[Cedar::Callback](/docs/code/callback.h/Callback.md)
-
-## Header
-
-[callback.h](/docs/code/callback.h.md)
+[Cedar::Callback](../Callback.md)
