@@ -10,6 +10,14 @@ class Callback<TReturn (*)(TArgs...)>;
 
 Contains a function pointer to use as a callback function.
 
+#### Template Parameters
+
+`TFunction` - The function pointer type.
+
+`TReturn` - The function pointer's return type.
+
+`Args...` - The function's argument types.
+
 > [!NOTE]
 > The first template declaration is a primary template and the second template is a partial template specialization for function pointers. The primary template does not have a definition, but both are necessary to enable the use of function pointers, their argument types, and their return types.
 
