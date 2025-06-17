@@ -2,15 +2,16 @@
 
 Contains a function pointer to use as a callback function.
 
-## Syntax
-
 ``` c++
 template <typename TFunction>
 class Callback;
 
-template <typename TReturns, typename... TArgs>
-class Callback<TReturns(*)(TArgs...)>;
+template <typename TReturn, typename... TArgs>
+class Callback<TReturn (*)(TArgs...)>;
 ```
+
+> [!NOTE]
+> The first template declaration is a primary template and the second template is a partial template specialization for function pointers. The primary template does not have a definition, but both are necessary to enable the use of function pointers, their argument types, and their return types.
 
 ## Members
 
