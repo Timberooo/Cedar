@@ -1,10 +1,10 @@
 # Cedar::Callback<TReturn (*)(TArgs...)>::Function
 
-**Type:** Operator\
+**Type:** Typedef\
 **Access:** Public
 
 ``` c++
-TReturn (*Function)(TArgs...);
+typedef TReturn (*Function)(TArgs...);
 ```
 
 The Callback class's function pointer type.
