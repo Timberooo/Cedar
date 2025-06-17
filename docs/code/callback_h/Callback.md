@@ -1,7 +1,5 @@
 # Cedar::Callback
 
-Contains a function pointer to use as a callback function.
-
 ``` c++
 template <typename TFunction>
 class Callback;
@@ -9,6 +7,8 @@ class Callback;
 template <typename TReturn, typename... TArgs>
 class Callback<TReturn (*)(TArgs...)>;
 ```
+
+Contains a function pointer to use as a callback function.
 
 > [!NOTE]
 > The first template declaration is a primary template and the second template is a partial template specialization for function pointers. The primary template does not have a definition, but both are necessary to enable the use of function pointers, their argument types, and their return types.
