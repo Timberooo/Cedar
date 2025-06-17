@@ -25,37 +25,37 @@ Contains a function pointer to use as a callback function.
 
 ### Types
 
-| Type | Description |
-| --- | --- |
-| [Function](Callback/Function.md) | The function pointer type. |
+| Type | Access | Description |
+| --- | --- | --- |
+| [Function](Callback/Function.md) | Public | The function pointer type. |
 
 ### Variables
 
-| Variable | Description |
-| --- | --- |
-| [static constexpr bool returnsVoid](Callback/returnsVoid.md) | Indicates whether or not `TReturn` is `void`. |
+| Variable | Access | Description |
+| --- | --- | --- |
+| [static constexpr bool returnsVoid](Callback/returnsVoid.md) | Public | Indicates whether or not `TReturn` is `void`. |
 
 ### Constructors
 
-| Constructor | Description |
-| --- | --- |
-| [Callback()](Callback/constructor.md#callback) | Initializes the callback function to `nullptr`. |
-| [Callback(Function function)](Callback/constructor.md#callbackfunction-function) | Initializes the callback function using the given function pointer. |
+| Constructor | Access | Description |
+| --- | --- | --- |
+| [Callback()](Callback/constructor.md#callback) | Public | Initializes the callback function to `nullptr`. |
+| [Callback(Function function)](Callback/constructor.md#callbackfunction-function) | Public | Initializes the callback function using the given function pointer. |
 
 ### Operators
 
-| Operator | Description |
-| --- | --- |
-| [operator Function() const](Callback/Function.md) | Returns the value of the callback pointer. |
+| Operator | Access | Description |
+| --- | --- | --- |
+| [operator Function() const](Callback/Function.md) | Public | Returns the value of the callback pointer. |
 
 ### Functions
 
-| Function | Description |
-| --- | --- |
-| [TReturn call(TArgs... args)](Callback/call.md) | Calls the callback function. |
-| [bool canCall() const](Callback/canCall.md) | Checks if the callback function can be called. |
-| [bool tryCall(TArgs... args)](Callback/tryCall.md#bool-trycalltargs-args) | Attempts to call the callback function. Only available when `TReturn` is `void`. |
-| [bool tryCall(T& returnVal, TArgs... args)](Callback/tryCall.md#bool-trycallt-returnval-targs-args) | Attempts to call the callback function. Only available when `TReturn` is not `void`. |
+| Function | Access | Description |
+| --- | --- | --- |
+| [TReturn call(TArgs... args)](Callback/call.md) | Public | Calls the callback function. |
+| [bool canCall() const](Callback/canCall.md) | Public | Checks if the callback function can be called. |
+| [bool tryCall(TArgs... args)](Callback/tryCall.md#bool-trycalltargs-args) | Public | Attempts to call the callback function. Only available when `TReturn` is `void`. |
+| [bool tryCall(T& returnVal, TArgs... args)](Callback/tryCall.md#bool-trycallt-returnval-targs-args) | Public | Attempts to call the callback function. Only available when `TReturn` is not `void`. |
 
 ## Header
 
