@@ -1,21 +1,18 @@
 # Cedar::Terminal::Color
 
-Colors used for writing colored output to the terminal associated with the Cedar engine.
+**Type:** Enum
 
-> [!NOTE]
-> Not all terminals and terminal emulators display colors the same; for example some terminals display `Yellow` and `Bright_Yellow` as shades of orange.
-
-## Syntax
-
-``` C++
+``` c++
 enum class Color;
 ```
 
+Color values used for setting the terminal's foreground (text) and background colors.
+
 ## Values
 
-| Value | Description |
+| Name | Description |
 | --- | --- |
-| `Use_Default` | Default color for the terminal. |
+| `Use_Default` | The terminal's default color. |
 | `Black` |  |
 | `Red` |  |
 | `Green` |  |
@@ -33,12 +30,10 @@ enum class Color;
 | `Bright_Cyan` |  |
 | `Bright_White` |  |
 
+## Remarks
+
+Not all terminals and terminal emulators display colors the same; for example some terminals may display `Yellow` and `Bright_Yellow` as shades of orange.
+
 ## Header
 
-[io/terminal.h](/docs/code/io/terminal.h.md)
-
-## See also
-
-[write](/docs/code/io/terminal.h/write.md)
-
-[writeLine](/docs/code/io/terminal.h/writeLine.md)
+[io/terminal.h](../terminal_h.md)
