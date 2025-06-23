@@ -5,8 +5,6 @@
 #ifndef CEDAR_IO_TERMINAL_H
 #define CEDAR_IO_TERMINAL_H
 
-#include "../math.h"
-
 #include <cstddef>
 #include <string_view>
 
