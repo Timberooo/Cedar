@@ -1,47 +1,66 @@
 # Cedar::Terminal::write
 
+**Type:** Function
+
 Writes a UTF-8 encoded string to the terminal associated with the Cedar engine.
 
-## Syntax
+## Overloads
 
-``` C++
+| Overload | Description |
+| --- | --- |
+| [void write(std::string_view str)](#void-writestdstring_view-str) | Writes a string to the terminal. |
+| [void write(std::string_view str, Color, foregroundColor, Color backgroundColor)](#void-writestdstring_view-str-color-foregroundcolor-color-backgroundcolor) | Writes a string to the terminal using the given foreground and background colors. |
+| [void write(char character)](#void-writechar-character) | Writes a character to the terminal. |
+| [void write(char character, Color foregroundColor, Color backgroundColor)](#void-writechar-character-color-foregroundcolor-color-backgroundcolor) | Writes a character to the terminal using the given foreground and background colors. |
+
+### void write(std::string_view str)
+
+``` c++
 void write(std::string_view str);
 ```
 
-Writes a string to the terminal using the terminal's default colors.
+Writes a string to the terminal.
 
-``` C++
+#### Parameters
+
+`str` - The string to write to the terminal.
+
+### void write(std::string_view str, Color foregroundColor, Color backgroundColor)
+
+``` c++
 void write(std::string_view str, Color foregroundColor, Color backgroundColor);
 ```
 
 Writes a string to the terminal using the given foreground and background colors.
 
-``` C++
-void write(char character);
-```
+#### Parameters
 
-Writes a character to the terminal using the terminal's default colors.
+`str` - The string to write to the terminal.
 
-``` C++
-void write(char character, Color foregroundColor, Color backgroundColor);
-```
+`foregroundColor` - The foreground (text) color to use.
+
+`background` - The background color to use.
+
+### void write(char character)
+
+Writes a character to the terminal.
+
+#### Parameters
+
+`character` - The character to write to the terminal.
+
+### void write(char character, Color foregroundColor, Color backgroundColor)
 
 Writes a character to the terminal using the given foreground and background colors.
 
-## Parameters
+#### Parameters
 
-**str** - The string to write to the terminal.
+`character` - The character to write to the terminal.
 
-**character** - The character to write to the terminal.
+`foregroundColor` - The foreground (text) color to use.
 
-**foregroundColor** - The foreground (text) color to use.
-
-**backgroundColor** - The background color to use.
+`background` - The background color to use.
 
 ## Header
 
-[io/terminal.h](/docs/code/io/terminal.h.md)
-
-## See also
-
-[writeLine](/docs/code/io/terminal.h/writeLine.md)
+[io/terminal.h](../terminal_h.md)
