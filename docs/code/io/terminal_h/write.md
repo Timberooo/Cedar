@@ -25,7 +25,7 @@ Writes a string to the terminal using the given foreground and background colors
 
 `foregroundColor` - The foreground (text) color to use. Default value is Color::Use_Default.
 
-`background` - The background color to use. Default value is Color::Use_Default.
+`backgroundColor` - The background color to use. Default value is Color::Use_Default.
 
 ### void write(char character, Color foregroundColor, Color backgroundColor)
 
@@ -41,7 +41,7 @@ Writes a character to the terminal using the given foreground and background col
 
 `foregroundColor` - The foreground (text) color to use. Default value is Color::Use_Default.
 
-`background` - The background color to use. Default value is Color::Use_Default.
+`backgroundColor` - The background color to use. Default value is Color::Use_Default.
 
 ## Header
 
