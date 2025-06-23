@@ -8,7 +8,7 @@ Writes a UTF-8 encoded string to the terminal associated with the Cedar engine.
 
 | Overload | Description |
 | --- | --- |
-| [void write(std::string_view str, Color, foregroundColor, Color backgroundColor)](#void-writestdstring_view-str-color-foregroundcolor-color-backgroundcolor) | Writes a string to the terminal using the given foreground and background colors. |
+| [void write(std::string_view str, Color foregroundColor, Color backgroundColor)](#void-writestdstring_view-str-color-foregroundcolor-color-backgroundcolor) | Writes a string to the terminal using the given foreground and background colors. |
 | [void write(char character, Color foregroundColor, Color backgroundColor)](#void-writechar-character-color-foregroundcolor-color-backgroundcolor) | Writes a character to the terminal using the given foreground and background colors. |
 
 ### void write(std::string_view str, Color foregroundColor, Color backgroundColor)
