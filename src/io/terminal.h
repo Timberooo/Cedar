@@ -5,8 +5,6 @@
 #ifndef CEDAR_IO_TERMINAL_H
 #define CEDAR_IO_TERMINAL_H
 
-#include "../math.h"
-
 #include <cstddef>
 #include <string_view>
 
@@ -56,41 +54,16 @@ namespace Cedar::Terminal
     };
 
 
+    void write(std::string_view str, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
-    void enable(bool enableTerminal);
-
-    bool enabled();
-
+    void write(char character, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
 
-    void write(std::string_view str);
+    inline void writeLine(std::string_view str, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
-    void write(char character);
-
-    void write(std::string_view str, Color foregroundColor, Color backgroundColor);
-
-    void write(char character, Color foregroundColor, Color backgroundColor);
+    inline void writeLine(char character, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
 
-    inline void writeLine(std::string_view str);
-
-    inline void writeLine(char character);
-
-    inline void writeLine(std::string_view str, Color foregroundColor, Color backgroundColor);
-
-    inline void writeLine(char character, Color foregroundColor, Color backgroundColor);
-
-
-
-    inline void writeLine(std::string_view str) {
-        write(str);
-        write('\n');
-    }
-
-    inline void writeLine(char character) {
-        write(character);
-        write('\n');
-    }
 
     inline void writeLine(std::string_view str, Color foregroundColor, Color backgroundColor) {
         write(str, foregroundColor, backgroundColor);

@@ -1,7 +1,6 @@
 #include "terminal.h"
 
 #include "../core.h"
-#include "../math.h"
 
 #include <cstddef>
 #include <new>
@@ -27,21 +26,38 @@ namespace
 
 namespace
 {
+    constexpr DWORD vtProcessingOutputModeFlags = ENABLE_PROCESSED_OUTPUT |
+                                                  ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+
+
     struct TerminalData
     {
-        HANDLE inputHandle  = NULL;
-        HANDLE outputHandle = NULL;
-
+    public:
         
-        inline TerminalData() {}
+        inline TerminalData();
 
         inline ~TerminalData();
+
+    private:
+
+        DWORD m_originalOutputMode = 0;
     };
 
 
 
+    inline TerminalData::TerminalData()
+    {
+        (void)AttachConsole(ATTACH_PARENT_PROCESS);
+        (void)GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &m_originalOutputMode);
+        (void)SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), m_originalOutputMode | vtProcessingOutputModeFlags);
+    }
+
+
+
     inline TerminalData::~TerminalData() {
-        Cedar::Terminal::enable(false);
+        (void)SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), m_originalOutputMode);
+        (void)FreeConsole();
     }
 }
 
@@ -98,38 +114,45 @@ namespace Cedar::Terminal
 // OS-agnostic implementation
 namespace
 {
-    enum class ColorType {
+    enum class ColorType : int {
         Foreground = 0,
         Background = 10
     };
 
 
 
+    void writeInternal(std::string_view str);
+
+    void writeInternal(char character);
+
+
     void setColor(Cedar::Terminal::Color color, ColorType type);
 
-    inline void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor);
+    void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor);
 
-    inline void resetColors();
+    void resetColors();
 
 
 
     void setColor(Cedar::Terminal::Color color, ColorType type)
     {
         if (color != Cedar::Terminal::Color::Use_Default)
-            Cedar::Terminal::write("\033[" + std::to_string(((int)color) + ((int)type)) + 'm');
+            writeInternal("\033[" + std::to_string(((int)color) + ((int)type)) + 'm');
     }
 
 
 
-    inline void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor) {
+    void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor)
+    {
         setColor(foregroundColor, ColorType::Foreground);
         setColor(backgroundColor, ColorType::Background);
     }
 
 
 
-    inline void resetColors() {
-        Cedar::Terminal::write("\033[0m");
+    void resetColors()
+    {
+        writeInternal("\033[0m");
     }
 }
 
@@ -140,14 +163,14 @@ namespace Cedar::Terminal
     void write(std::string_view str, Color foregroundColor, Color backgroundColor)
     {
         setColors(foregroundColor, backgroundColor);
-        write(str);
+        writeInternal(str);
         resetColors();
     }
 
     void write(char character, Color foregroundColor, Color backgroundColor)
     {
         setColors(foregroundColor, backgroundColor);
-        write(character);
+        writeInternal(character);
         resetColors();
     }
 }
@@ -164,61 +187,14 @@ namespace Cedar::Terminal
 
 namespace
 {
-    // Necessary for controlling the terminal through ANSI escape sequences
-    constexpr DWORD vtProcessingOutputModeFlags = ENABLE_PROCESSED_OUTPUT |
-                                                  ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-}
-
-
-
-namespace Cedar::Terminal
-{
-    void enable(bool enableTerminal)
+    void writeInternal(std::string_view str)
     {
-        if (enableTerminal == enabled())
-            return;
-
-        if (enableTerminal)
-        {
-            // TODO: Check result of AllocConsole.
-            (void)AllocConsole();
-            g_terminalData.inputHandle = GetStdHandle(STD_INPUT_HANDLE);
-            g_terminalData.outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-            // Make sure VT processing is enabled
-            DWORD outputMode;
-            (void)GetConsoleMode(g_terminalData.outputHandle, &outputMode);
-            outputMode |= vtProcessingOutputModeFlags;
-            (void)SetConsoleMode(g_terminalData.outputHandle, outputMode);
-        }
-        else
-        {
-            // TODO: Free result of AllocConsole.
-            (void)FreeConsole();
-            g_terminalData.inputHandle = NULL;
-            g_terminalData.outputHandle = NULL;
-        }
+        (void)WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), str.data(), str.length(), NULL, NULL);
     }
 
-
-
-    bool enabled()
+    void writeInternal(char character)
     {
-        return g_terminalData.outputHandle != NULL;
-    }
-
-
-
-    void write(std::string_view str)
-    {
-        if (enabled())
-            (void)WriteConsoleA(g_terminalData.outputHandle, str.data(), str.length(), NULL, NULL);
-    }
-
-    void write(char character)
-    {
-        if (enabled())
-            (void)WriteConsoleA(g_terminalData.outputHandle, &character, 1, NULL, NULL);
+        (void)WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), &character, 1, NULL, NULL);
     }
 }
 
@@ -228,31 +204,15 @@ namespace Cedar::Terminal
 
 
 
-namespace Cedar::Terminal
+namespace
 {
-    void enable(bool enableTerminal)
-    {
-        // NOTE: This function and enabled() only exist because of how Windows' console
-        //       vs window subsystem works. These functions aren't necessary for Linux.
-    }
 
-
-
-    bool enabled()
-    {
-        // NOTE: This function and enable() only exist because of how Windows' console vs
-        //       window subsystem works. These functions aren't necessary for Linux.
-        return true;
-    }
-
-
-
-    void write(std::string_view str)
+    void writeInternal(std::string_view str)
     {
         (void)::write(STDOUT_FILENO, str.data(), str.length());
     }
 
-    void write(char character)
+    void writeInternal(char character)
     {
         (void)::write(STDOUT_FILENO, &character, 1);
     }
