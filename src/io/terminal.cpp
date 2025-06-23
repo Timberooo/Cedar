@@ -240,6 +240,66 @@ namespace Cedar::Terminal
 
 
 
+namespace
+{
+    enum class ColorType : int {
+        Foreground = 0,
+        Background = 10
+    };
+
+
+
+    void writeInternal(std::string_view str);
+
+    void writeInternal(char character);
+
+
+    void setColor(Cedar::Terminal::Color color, ColorType type);
+
+    void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor);
+
+    void resetColors();
+
+
+
+    void writeInternal(std::string_view str)
+    {
+        (void)::write(STDOUT_FILENO, str.data(), str.length());
+    }
+
+
+
+    void writeInternal(char character)
+    {
+        (void)::write(STDOUT_FILENO, &character, 1);
+    }
+
+
+
+    void setColor(Cedar::Terminal::Color color, ColorType type)
+    {
+        if (color != Cedar::Terminal::Color::Use_Default)
+            writeInternal("\033[" + std::to_string(((int)color) + ((int)type)) + 'm');
+    }
+
+
+
+    void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor)
+    {
+        setColor(foregroundColor, ColorType::Foreground);
+        setColor(backgroundColor, ColorType::Background);
+    }
+
+
+
+    void resetColors()
+    {
+        writeInternal("\033[0m");
+    }
+}
+
+
+
 namespace Cedar::Terminal
 {
     void enable(bool enableTerminal)
@@ -259,14 +319,20 @@ namespace Cedar::Terminal
 
 
 
-    void write(std::string_view str)
+    void write(std::string_view str, Color foregroundColor, Color backgroundColor)
     {
-        (void)::write(STDOUT_FILENO, str.data(), str.length());
+        setColors(foregroundColor, backgroundColor);
+        writeInternal(str);
+        resetColors();
     }
 
-    void write(char character)
+
+
+    void write(char character, Color foregroundColor, Color backgroundColor)
     {
-        (void)::write(STDOUT_FILENO, &character, 1);
+        setColors(foregroundColor, backgroundColor);
+        writeInternal(character);
+        resetColors();
     }
 }
 
