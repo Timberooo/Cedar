@@ -54,12 +54,6 @@ namespace Cedar::Terminal
     };
 
 
-
-    void enable(bool enableTerminal);
-
-    bool enabled();
-
-
     void write(std::string_view str, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
     void write(char character, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
