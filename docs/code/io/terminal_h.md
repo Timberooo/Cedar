@@ -1,20 +1,25 @@
 # io/terminal.h
 
-Contains functions for writing to and controlling the terminal associated with the Cedar engine.
+Functions for writing to the terminal associated with the Cedar engine.
 
-These functions should be preferred over C++ STL standard output streams, C standard output functions, and platform-specific output functions. All strings used in the terminal are assumed to be in the UTF-8 character encoding.
+## Incldues
+
+| File | Notes |
+| --- | --- |
+| \<cstddef> |  |
+| \<string_view> |  |
 
 ## Enums
 
 | Enum | Description |
 | --- | --- |
-| [Color](/docs/code/io/terminal.h/Color.md) | Terminal output colors. |
+| [Color](terminal_h/Color.md) | Terminal text and background colors. |
 
 ## Functions
 
 | Function | Description |
 | --- | --- |
-| [enable](/docs/code/io/terminal.h/enable.md) | Creates or terminates a terminal. |
-| [enabled](/docs/code/io/terminal.h/enabled.md) | Checks if a terminal is present to output to. |
-| [write](/docs/code/io/terminal.h/write.md) | Writes an optionally colored string to the terminal. |
-| [writeLine](/docs/code/io/terminal.h/writeLine.md) | Writes an optionally colored string to the terminal followed by a newline character. |
+| [void write(std::string_view str, Color foregroundColor, Color backgroundColor)](terminal_h/write.md#void-writestdstring_view-str-color-foregroundcolor-color-backgroundcolor) | Writes a string to the terminal using the given foreground and background colors. |
+| [void write(char character, Color foregroundColor, Color backgroundColor)](terminal_h/write.md#void-writechar-character-color-foregroundcolor-color-backgroundcolor) | Writes a character to the terminal using the given foreground and background colors. |
+| [void writeLine(std::string_view str, Color foregroundColor, Color backgroundColor)]() | Writes a string to the terminal using the given foreground and background colors and moves the cursor to the beginning of the next line. |
+| [void writeLine(char character, Color foregroundColor, Color backgroundColor)]() | Writes a character to the terminal using the given foreground and background colors and moves the cursor to the beginning of the next line. |
