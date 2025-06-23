@@ -2,7 +2,7 @@
 
 Functions for writing to the terminal associated with the Cedar engine.
 
-## Incldues
+## Includes
 
 | File | Notes |
 | --- | --- |
