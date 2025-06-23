@@ -62,35 +62,16 @@ namespace Cedar::Terminal
     bool enabled();
 
 
+    void write(std::string_view str, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
-    void write(std::string_view str);
-
-    void write(char character);
-
-    void write(std::string_view str, Color foregroundColor, Color backgroundColor);
-
-    void write(char character, Color foregroundColor, Color backgroundColor);
+    void write(char character, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
 
-    inline void writeLine(std::string_view str);
+    inline void writeLine(std::string_view str, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
-    inline void writeLine(char character);
-
-    inline void writeLine(std::string_view str, Color foregroundColor, Color backgroundColor);
-
-    inline void writeLine(char character, Color foregroundColor, Color backgroundColor);
+    inline void writeLine(char character, Color foregroundColor = Color::Use_Default, Color backgroundColor = Color::Use_Default);
 
 
-
-    inline void writeLine(std::string_view str) {
-        write(str);
-        write('\n');
-    }
-
-    inline void writeLine(char character) {
-        write(character);
-        write('\n');
-    }
 
     inline void writeLine(std::string_view str, Color foregroundColor, Color backgroundColor) {
         write(str, foregroundColor, backgroundColor);

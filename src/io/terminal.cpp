@@ -96,61 +96,7 @@ namespace Cedar::Terminal
 
 
 // OS-agnostic implementation
-namespace
-{
-    enum class ColorType {
-        Foreground = 0,
-        Background = 10
-    };
 
-
-
-    void setColor(Cedar::Terminal::Color color, ColorType type);
-
-    inline void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor);
-
-    inline void resetColors();
-
-
-
-    void setColor(Cedar::Terminal::Color color, ColorType type)
-    {
-        if (color != Cedar::Terminal::Color::Use_Default)
-            Cedar::Terminal::write("\033[" + std::to_string(((int)color) + ((int)type)) + 'm');
-    }
-
-
-
-    inline void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor) {
-        setColor(foregroundColor, ColorType::Foreground);
-        setColor(backgroundColor, ColorType::Background);
-    }
-
-
-
-    inline void resetColors() {
-        Cedar::Terminal::write("\033[0m");
-    }
-}
-
-
-
-namespace Cedar::Terminal
-{
-    void write(std::string_view str, Color foregroundColor, Color backgroundColor)
-    {
-        setColors(foregroundColor, backgroundColor);
-        write(str);
-        resetColors();
-    }
-
-    void write(char character, Color foregroundColor, Color backgroundColor)
-    {
-        setColors(foregroundColor, backgroundColor);
-        write(character);
-        resetColors();
-    }
-}
 // OS-agnostic implementation
 
 
@@ -167,6 +113,62 @@ namespace
     // Necessary for controlling the terminal through ANSI escape sequences
     constexpr DWORD vtProcessingOutputModeFlags = ENABLE_PROCESSED_OUTPUT |
                                                   ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+
+
+    enum class ColorType : int {
+        Foreground = 0,
+        Background = 10
+    };
+
+
+
+    void writeInternal(std::string_view str);
+
+    void writeInternal(char character);
+
+
+
+    void setColor(Cedar::Terminal::Color color, ColorType type);
+
+    void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor);
+
+    void resetColors();
+
+
+
+    void writeInternal(std::string_view str)
+    {
+        (void)WriteConsoleA(g_terminalData.outputHandle, str.data(), str.length(), NULL, NULL);
+    }
+
+    void writeInternal(char character)
+    {
+        (void)WriteConsoleA(g_terminalData.outputHandle, &character, 1, NULL, NULL);
+    }
+
+
+
+    void setColor(Cedar::Terminal::Color color, ColorType type)
+    {
+        if (color != Cedar::Terminal::Color::Use_Default)
+            writeInternal("\033[" + std::to_string(((int)color) + ((int)type)) + 'm');
+    }
+
+
+
+    void setColors(Cedar::Terminal::Color foregroundColor, Cedar::Terminal::Color backgroundColor)
+    {
+        setColor(foregroundColor, ColorType::Foreground);
+        setColor(backgroundColor, ColorType::Background);
+    }
+
+
+
+    void resetColors()
+    {
+        writeInternal("\033[0m");
+    }
 }
 
 
@@ -209,16 +211,26 @@ namespace Cedar::Terminal
 
 
 
-    void write(std::string_view str)
+    void write(std::string_view str, Color foregroundColor, Color backgroundColor)
     {
-        if (enabled())
-            (void)WriteConsoleA(g_terminalData.outputHandle, str.data(), str.length(), NULL, NULL);
+        if (!enabled())
+            return;
+
+        setColors(foregroundColor, backgroundColor);
+        writeInternal(str);
+        resetColors();
     }
 
-    void write(char character)
+
+
+    void write(char character, Color foregroundColor, Color backgroundColor)
     {
-        if (enabled())
-            (void)WriteConsoleA(g_terminalData.outputHandle, &character, 1, NULL, NULL);
+        if (!enabled())
+            return;
+
+        setColors(foregroundColor, backgroundColor);
+        writeInternal(character);
+        resetColors();
     }
 }
 
